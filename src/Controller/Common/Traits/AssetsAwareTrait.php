@@ -86,7 +86,6 @@ trait AssetsAwareTrait
             }
 
             foreach ($entrypoint['css'] as $file) {
-
                 if (!isset($existingFiles['css'][$file])) {
                     $existingFiles['css'][$file] = true;
                     $this->cssFiles[$entryName][]  = $file;

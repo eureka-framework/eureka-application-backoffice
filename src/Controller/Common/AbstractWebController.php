@@ -59,7 +59,7 @@ abstract class AbstractWebController extends Controller
             ->add('menuState', $this->getMenuState($request))
             ->add('meta', $this->getMeta())
             ->add('cssFiles', $this->getCssFiles())
-            ->add('jsFiles',  $this->getJsFiles())
+            ->add('jsFiles', $this->getJsFiles())
             ->add('flashNotifications', $this->getAllFlashNotification())
             ->add('flashFormErrors', $this->getFormErrors())
             ->add('currentUrl', (string) $currentUri)

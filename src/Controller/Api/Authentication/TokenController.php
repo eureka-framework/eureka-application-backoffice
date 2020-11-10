@@ -66,7 +66,7 @@ class TokenController extends AbstractApiController
         $token = $this->userLoginService->login($serverRequest);
 
         //~ In web application context, we also persist the token in the cookie (secure & http only token)
-        $this->cookieService->set('Authorization', 'JWT '. (string) $token);
+        $this->cookieService->set('Authorization', 'JWT ' . (string) $token);
 
         return $this->getResponseJsonSuccess(['token' => (string) $token]);
     }

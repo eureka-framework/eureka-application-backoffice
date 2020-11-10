@@ -112,7 +112,8 @@ class TwigMiddleware implements MiddlewareInterface
     private function configureExtensions(): void
     {
         $this->twig->addRuntimeLoader(new class implements Twig\RuntimeLoader\RuntimeLoaderInterface {
-            public function load($class) {
+            public function load($class)
+            {
                 if (Twig\Extra\Markdown\MarkdownRuntime::class === $class) {
                     return new Twig\Extra\Markdown\MarkdownRuntime(new Twig\Extra\Markdown\DefaultMarkdown());
                 }
