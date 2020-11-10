@@ -1,0 +1,27 @@
+parameters:
+
+  twig.paths:
+    '../templates/common': 'common'
+    '../templates/layout': 'layout'
+    '../templates/macro':  'macro'
+    '../templates/mail':   'mail'
+    '../templates/app':    'app'
+
+services:
+
+  _defaults:
+    autowire:      true
+    autoconfigure: true
+    public:        false
+
+  Twig\Loader\FilesystemLoader: ~
+
+  Twig\Environment:
+    arguments:
+      $loader: '@Twig\Loader\FilesystemLoader'
+      $options:
+        cache: "%kernel.directory.cache%/%kernel.environment%/twig"
+        debug: "%kernel.debug%"
+
+  twig:
+    alias: Twig\Environment

@@ -1,0 +1,4 @@
+# Services Yaml file
+parameters:
+    app.name:    'eureka'
+    app.version: '1.0.0'

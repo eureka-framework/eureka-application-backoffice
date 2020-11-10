@@ -1,0 +1,46 @@
+# For route with log-in needed, add following parameter in defaults: "authenticationRequired: true"
+# For route with log-in needed, add following parameter in defaults: "authenticationRequired: true"
+# ===== HOME =====
+api_home:
+    path:       /api/
+    controller: Application\Controller\Api\Home\HomeController::index
+    methods:    [GET]
+
+api_ping:
+    path:       /api/ping
+    controller: Application\Controller\Api\Home\HomeController::ping
+    methods:    [GET]
+
+
+# ===== AUTHENTICATION =====
+authentication_token_get:  # Rate Limit: 5 requests / 10 seconds
+    path:       /api/auth/token/get
+    controller: Application\Controller\Api\Authentication\TokenController::get
+    methods:    [POST]
+    defaults:
+        rateLimiterQuota: 5
+        rateLimiterTTL: 10
+
+authentication_token_verify: # Rate limit: 100 requests / min
+    path:       /api/auth/token/verify
+    controller: Application\Controller\Api\Authentication\TokenController::verify
+    methods:    [POST]
+
+authentication_token_revoke:
+    path:       /api/auth/token/revoke
+    controller: Application\Controller\Api\Authentication\TokenController::revoke
+    methods:    [POST]
+    defaults:
+        authenticationRequired: true
+
+
+# ===== HEALTH =====
+liveness: # Rate limit: 100 requests / min
+    path:       /api/liveness
+    controller: Application\Controller\Api\Health\HealthController::liveness
+    methods:    [GET]
+
+readiness: # Rate limit: 100 requests / min
+    path:       /api/readiness
+    controller: Application\Controller\Api\Health\HealthController::readiness
+    methods:    [GET]

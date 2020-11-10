@@ -1,0 +1,21 @@
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire:      true
+    autoconfigure: true
+    public:        false
+
+  #~ Date provider (time zone UTC & date time now UTC)
+  application.date.time.zone.utc:
+    class: DateTimeZone
+    arguments:
+      $timezone: 'UTC'
+
+  application.date.time.now.utc:
+    class: DateTimeImmutable
+    arguments:
+      $time: 'now'
+      $timezone: '@application.date.time.zone.utc'
+
+  DateTimeImmutable:
+    alias: 'application.date.time.now.utc'

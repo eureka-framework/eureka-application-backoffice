@@ -1,0 +1,24 @@
+{% extends '@layout/Main.twig' %}
+
+{% block page %}
+
+    <div class="container-scroller">
+
+        {% include '@common/Side/Menu.twig' %}
+
+        <div class="container-fluid page-body-wrapper">
+
+            {% include '@common/Header/Header.twig' %}
+
+            <div class="main-panel">
+
+                <div class="content-wrapper">
+                    {% block content %}{% endblock %}
+                </div>
+
+                {% include '@common/Footer/Footer.twig'%}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="{{ meta.charset }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block page_title %}{{ meta.title }}{% endblock %}</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ image('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ image('favicon-16x16.png') }}">
+
+    <meta property="og:url" content="{{ currentUrl }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{% block og_title %}{{ meta.title }}{% endblock %}" />
+    <meta property="og:description" content="{{ meta.description }}" />
+    <meta property="og:image" content="{{ baseUrlImage }}{{ image('logo-share.png') }}" />
+
+    {% for file in cssFiles.app %}
+        <link rel="stylesheet" href="{{ file }}">
+    {% endfor %}
+</head>
+<body class="{{ menuState == 'closed' ? 'sidebar-icon-only' : '' }}">
+
+    {% block page %}{% endblock %}
+
+    {% for file in jsFiles.app %}
+        <script src="{{ file }}"></script>
+    {% endfor %}
+    {% block footer_script %}{% endblock %}
+
+</body>
+</html>

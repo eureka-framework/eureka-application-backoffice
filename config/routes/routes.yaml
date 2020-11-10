@@ -1,0 +1,156 @@
+# For route with log-in needed, add following parameter in defaults: "authenticationRequired: true"
+# ======================================================================================================================
+# =                                                 WEB                                                                =
+# ======================================================================================================================
+home:
+    path:       /
+    controller: Application\Controller\Web\Home\HomeController::index
+    methods:    [GET]
+    defaults:
+        authenticationRequired: true
+
+user_login:
+    path:       /user/login
+    controller: Application\Controller\Web\User\LoginController::index
+    methods:    [ GET ]
+
+#~ Pages
+page_buttons:
+    path:       /page/buttons
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: buttons
+        authenticationRequired: true
+
+page_dropdowns:
+    path:       /page/dropdowns
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: dropdowns
+        authenticationRequired: true
+
+page_typography:
+    path:       /page/typography
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: typography
+        authenticationRequired: true
+
+page_form:
+    path:       /page/form
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: form
+        authenticationRequired: true
+
+page_tables:
+    path:       /page/tables
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: tables
+        authenticationRequired: true
+
+page_charts:
+    path:       /page/charts
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: charts
+        authenticationRequired: true
+
+page_icons:
+    path:       /page/icons
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: icons
+        authenticationRequired: true
+
+page_blank:
+    path:       /page/blank
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: blank
+        authenticationRequired: true
+
+page_404:
+    path:       /page/404
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: 404
+        authenticationRequired: true
+
+page_500:
+    path:       /page/500
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: 500
+        authenticationRequired: true
+
+page_login:
+    path:       /page/login
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: login
+        authenticationRequired: true
+
+page_register:
+    path:       /page/register
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: register
+        authenticationRequired: true
+
+# ======================================================================================================================
+# =                                                 API                                                                =
+# ======================================================================================================================
+api_home:
+    path:       /api/
+    controller: Application\Controller\Api\Home\HomeController::index
+    methods:    [GET]
+
+api_ping:
+    path:       /api/ping
+    controller: Application\Controller\Api\Home\HomeController::ping
+    methods:    [GET]
+
+
+# ===== AUTHENTICATION =====
+authentication_token_get:  # Rate Limit: 5 requests / 10 seconds
+    path:       /api/auth/token/get
+    controller: Application\Controller\Api\Authentication\TokenController::get
+    methods:    [POST]
+
+authentication_token_verify: # Rate limit: 100 requests / min
+    path:       /api/auth/token/verify
+    controller: Application\Controller\Api\Authentication\TokenController::verify
+    methods:    [POST]
+
+authentication_token_revoke:
+    path:       /api/auth/token/revoke
+    controller: Application\Controller\Api\Authentication\TokenController::revoke
+    methods:    [POST]
+    defaults:
+        authenticationRequired: true
+
+
+# ===== HEALTH =====
+liveness: # Rate limit: 100 requests / min
+    path:       /api/liveness
+    controller: Application\Controller\Api\Health\HealthController::liveness
+    methods:    [GET]
+
+readiness: # Rate limit: 100 requests / min
+    path:       /api/readiness
+    controller: Application\Controller\Api\Health\HealthController::readiness
+    methods:    [GET]
