@@ -18,6 +18,4 @@ use Eureka\Kernel\Http\Exception\HttpUnauthorizedException;
  *
  * @author Catalog Team
  */
-class TokenExpiredException extends HttpUnauthorizedException
-{
-}
+class TokenExpiredException extends HttpUnauthorizedException {}

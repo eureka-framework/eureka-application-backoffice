@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php declare(strict_types=1);
+<?php
 
 /*
  * Copyright (c) Romain Cottard
@@ -8,8 +8,11 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 use Eureka\Kernel\Console\Application\Application;
 use Eureka\Kernel\Console\Kernel;
+use Lcobucci\Clock\SystemClock;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\NullLogger;
 
@@ -18,12 +21,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
 
-    $root   = realpath(__DIR__ . '/..');
-    $env    = getenv('EKA_ENV') ?: 'dev';
-    $debug  = (bool) (getenv('EKA_DEBUG') ?: ($env === 'dev'));
+    $root   = (string) \realpath(__DIR__ . '/..');
+    $env    = \getenv('EKA_ENV') ?: 'dev';
+    $debug  = (bool) (\getenv('EKA_DEBUG') ?: ($env === 'dev'));
     $kernel = new Kernel($root, $env, $debug);
 
-    $console = new Application($argv, $kernel->getContainer());
+    $console = new Application(SystemClock::fromUTC(), $argv, container: $kernel->getContainer());
     $console
         ->setBaseNamespaces([
             '\Eureka\Component',

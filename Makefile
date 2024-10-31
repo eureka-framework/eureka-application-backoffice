@@ -1,45 +1,91 @@
-.PHONY: install update phpcs phpcbf tests testdox behat deploy
+.PHONY: validate install update phpcs phpcsf php-min-compatibility php-max-compatibility phpstan analyze tests testdox ci clean
 
-PHP_FILES := $(shell find src tests -type f -name '*.php')
+PHP_MIN_VERSION := "8.3"
+PHP_MAX_VERSION := "8.3"
+COMPOSER_BIN := composer
+
+define header =
+    @if [ -t 1 ]; then printf "\n\e[37m\e[100m  \e[104m $(1) \e[0m\n"; else printf "\n### $(1)\n"; fi
+endef
+
+#~ Composer dependency
+validate:
+	$(call header,Composer Validation)
+	@${COMPOSER_BIN} validate
 
 install:
-	composer install
+	$(call header,Composer Install)
+	@${COMPOSER_BIN} install
 
 update:
-	composer update
+	$(call header,Composer Update)
+	@${COMPOSER_BIN} update
+	@${COMPOSER_BIN} bump
 
-composer.lock: composer.json
-	composer install
+outdated:
+	$(call header,Composer Outdated)
+	@${COMPOSER_BIN} outdated
 
-vendor/bin/phpunit: composer.lock
+composer.lock: install
 
-build/reports/cs/eureka.xml: composer.lock $(PHP_FILES)
-	mkdir -p build/reports/cs
-	./vendor/bin/phpcs --standard=./ci/phpcs/eureka.xml --cache=./build/cs_eureka.cache -p --report-full --report-checkstyle=./build/reports/cs/eureka.xml src/ tests/
+#~ Report directories dependencies
+build/reports/phpunit:
+	@mkdir -p build/reports/phpunit
 
-build/reports/php80/compatibility_check.xml: composer.lock $(PHP_FILES)
-	mkdir -p build/reports/php80
-	./vendor/bin/phpcs --standard=./ci/phpcs/PHP80Compatibility.xml --cache=./build/php80.cache -p --report-full --report-checkstyle=./build/reports/php80/compatibility_check.xml src/ tests/
+build/reports/phpcs:
+	@mkdir -p build/reports/cs
 
-phpcs: build/reports/cs/eureka.xml
+build/reports/phpstan:
+	@mkdir -p build/reports/phpstan
 
-php80compatibility: build/reports/php80/compatibility_check.xml
+#~ main commands
+deps: composer.json # jenkins + manual
+	$(call header,Checking Dependencies)
+	@XDEBUG_MODE=off ./vendor/bin/composer-dependency-analyser --config=./ci/composer-dependency-analyser.php # for shadow & unused required dependencies
+	#@XDEBUG_MODE=off ./vendor/bin/composer-require-checker check # mainly for ext-* missing dependencies
 
-phpcbf: composer.lock
-	./vendor/bin/phpcbf --standard=./ci/phpcs/eureka.xml src/ tests/
+phpcs: vendor/bin/php-cs-fixer build/reports/phpcs # auto + manual
+	$(call header,Checking Code Style)
+	@./vendor/bin/php-cs-fixer check -v --diff
 
-build/reports/phpunit/unit.xml build/reports/phpunit/unit.cov: vendor/bin/phpunit $(PHP_FILES)
-	mkdir -p build/reports/phpunit
-	php -dzend_extension=xdebug.so ./vendor/bin/phpunit -c ./phpunit.xml.dist --coverage-clover=./build/reports/phpunit/clover.xml --log-junit=./build/reports/phpunit/unit.xml --coverage-php=./build/reports/phpunit/unit.cov --coverage-html=./build/reports/coverage/ --fail-on-warning
+phpcsf: vendor/bin/php-cs-fixer # manual
+	$(call header,Fixing Code Style)
+	@./vendor/bin/php-cs-fixer fix -v
 
-tests: build/reports/phpunit/unit.xml build/reports/phpunit/unit.cov
+php-min-compatibility: vendor/bin/phpstan build/reports/phpstan # auto + manual
+	$(call header,Checking PHP $(PHP_MIN_VERSION) compatibility)
+	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --configuration=./ci/phpmin-compatibility.neon --error-format=checkstyle > ./build/reports/phpstan/phpmin-compatibility.xml
 
-testdox: vendor/bin/phpunit $(PHP_FILES)
-	php -dzend_extension=xdebug.so ./vendor/bin/phpunit -c ./phpunit.xml.dist --fail-on-warning --testdox
+php-max-compatibility: vendor/bin/phpstan build/reports/phpstan # auto + manual
+	$(call header,Checking PHP $(PHP_MAX_VERSION) compatibility)
+	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --configuration=./ci/phpmax-compatibility.neon --error-format=checkstyle > ./build/reports/phpstan/phpmax-compatibility.xml
 
-behat: composer.lock
-	./vendor/bin/behat --strict --tags="~@disabled && ~@external" --colors
+phpstan: vendor/bin/phpstan build/reports/phpstan # auto
+	$(call header,Running Static Analyze)
+	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --error-format=checkstyle > ./build/reports/phpstan/phpstan.xml
 
-deploy: composer.lock
-	composer update
-	./bin/console --color deploy
+analyze: vendor/bin/phpstan build/reports/phpstan # manual
+	$(call header,Running Static Analyze - Pretty tty format)
+	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --error-format=table
+
+tests: vendor/bin/phpunit build/reports/phpunit # auto + manual
+	$(call header,Running Unit Tests)
+	@XDEBUG_MODE=coverage DEEZER_MODE=test php -dzend_extension=xdebug.so ./vendor/bin/phpunit --testsuite=unit --coverage-clover=./build/reports/phpunit/clover.xml --log-junit=./build/reports/phpunit/unit.xml --coverage-php=./build/reports/phpunit/unit.cov --coverage-html=./build/reports/coverage/ --fail-on-warning
+
+integration: vendor/bin/phpunit build/reports/phpunit # manual
+	$(call header,Running Integration Tests)
+	@XDEBUG_MODE=coverage DEEZER_MODE=test php -dzend_extension=xdebug.so ./vendor/bin/phpunit --testsuite=integration --fail-on-warning
+
+testdox: vendor/bin/phpunit # manual
+	$(call header,Running Unit Tests (Pretty format))
+	@XDEBUG_MODE=coverage DEEZER_MODE=test php -dzend_extension=xdebug.so ./vendor/bin/phpunit --testsuite=unit --fail-on-warning --testdox
+
+behat: vendor/bin/behat # auto + manual
+	$(call header,Running Bethat tests)
+	@XDEBUG_MODE=off DEEZER_MODE=test ./vendor/bin/behat --strict --tags="~@disabled&&~@external" --colors
+
+clean: # manual
+	$(call header,Cleaning previous build)
+	@if [ "$(shell ls -A ./build)" ]; then rm -rf ./build/*; fi; echo " done"
+
+ci: clean validate deps phpcs tests integration php-min-compatibility php-max-compatibility analyze behat

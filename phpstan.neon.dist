@@ -1,0 +1,26 @@
+includes:
+  - ./vendor/phpstan/phpstan-phpunit/extension.neon
+  - ./vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+  phpVersion: 80300
+  level: max
+  paths:
+    - ./bin/console
+    - ./src
+    - ./scripts
+    - ./tests
+    #- ./features/bootstrap # Maybe later
+
+  bootstrapFiles:
+    - ./vendor/autoload.php
+
+  ignoreErrors:
+    - identifier: missingType.generics
+      path:       'src/Domain/User/Entity'
+    - identifier: missingType.generics
+      path:       'src/Domain/User/Infrastructure'
+
+    - message: '`Parameter #1 \$content of method Eureka\\Kernel\\Http\\Controller\\Controller::getResponseJson\(\).+`'
+      path:    'src/Controller/'
+    - message: '`Cannot cast mixed`'

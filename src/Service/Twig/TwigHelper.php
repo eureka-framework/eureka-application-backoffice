@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Application\Service\Twig;
 
+use Application\Exception\TwigHelperException;
 use Symfony\Component\Routing\Router;
 
 /**
@@ -20,10 +21,7 @@ use Symfony\Component\Routing\Router;
  */
 class TwigHelper
 {
-    /** @var Router */
-    private Router $router;
-
-    /** @var array $assetsManifest */
+    /** @var array<string> $assetsManifest */
     private array $assetsManifest;
 
     /**
@@ -32,10 +30,8 @@ class TwigHelper
      * @param Router $router
      * @param string $webAssetsPath
      */
-    public function __construct(Router $router, string $webAssetsPath)
+    public function __construct(private readonly Router $router, string $webAssetsPath)
     {
-        $this->router = $router;
-
         $this->initializeAssetsManifest($webAssetsPath);
     }
 
@@ -47,15 +43,27 @@ class TwigHelper
     {
         $manifestFile = $webAssetsPath . '/manifest.json';
 
-        if (!is_readable($manifestFile)) {
-            throw new \RuntimeException('manifest.json file is not readable.');
+        if (!\is_readable($manifestFile)) {
+            throw new TwigHelperException('manifest.json file is not readable.', 1100);
         }
 
-        $this->assetsManifest = json_decode(file_get_contents($manifestFile), true);
+
+        try {
+            /** @var array<string> $json */
+            $json = \json_decode(
+                (string) \file_get_contents($manifestFile),
+                true,
+                flags: \JSON_THROW_ON_ERROR,
+            );
+
+            $this->assetsManifest = $json;
+        } catch (\JsonException $exception) {
+            throw new TwigHelperException('Unable to decode manifest.json file!', 1101, $exception);
+        }
     }
 
     /**
-     * @return array
+     * @return array<string, callable>
      */
     public function getCallbackFunctions(): array
     {
@@ -68,7 +76,7 @@ class TwigHelper
 
     /**
      * @param  string $routeName
-     * @param  array $params
+     * @param  array<string, string|int|float> $params
      * @return string
      */
     public function path(string $routeName, array $params = []): string
@@ -103,7 +111,7 @@ class TwigHelper
      */
     private function getRealAssetPath(string $filename, string $baseUrl): string
     {
-        $filePath = trim($baseUrl, ' /') . '/' . ltrim($filename, '/');
+        $filePath = \trim($baseUrl, ' /') . '/' . \ltrim($filename, '/');
         if (!isset($this->assetsManifest[$filePath])) {
             return '';
         }

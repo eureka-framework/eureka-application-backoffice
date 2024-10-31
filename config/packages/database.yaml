@@ -1,20 +1,18 @@
 parameters:
-    # Common config database
-    app.database.common:
-        dsn:      'mysql:dbname=%app.secret.database.schema%;host=%app.secret.database.host%;charset=UTF8'
-        username: '%app.secret.database.username%'
-        password: '%app.secret.database.password%'
-        options:
-            !php/const \PDO::MYSQL_ATTR_INIT_COMMAND: "SET NAMES 'UTF8'"
+  # Common config database
+  app.database.common:
+    dsn:      'mysql:dbname=%app.secret.database.schema%;host=%app.secret.database.host%;charset=utf8mb4'
+    username: '%app.secret.database.username%'
+    password: '%app.secret.database.password%'
+    options:
+      !php/const \PDO::MYSQL_ATTR_INIT_COMMAND: "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'"
 
 services:
-    # default configuration for services in *this* file
-    _defaults:
-        public:        false
-        autowire:      true
-        autoconfigure: true
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true
 
-    Eureka\Component\Database\ConnectionFactory:
-        arguments:
-            $configs:
-                common: '%app.database.common%'
+  Eureka\Component\Database\ConnectionFactory:
+    arguments:
+      $configs:
+        common: '%app.database.common%'

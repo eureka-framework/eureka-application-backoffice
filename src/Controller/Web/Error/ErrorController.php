@@ -40,35 +40,17 @@ class ErrorController extends AbstractWebController implements ErrorControllerIn
             $this->redirect($this->getRouteUri('user_login'));
         }
 
-        switch (true) {
-            case $exception instanceof Exception\HttpBadRequestException:
-                $httpCode = 400;
-                break;
-            case $exception instanceof Exception\HttpUnauthorizedException:
-                $httpCode = 401;
-                break;
-            case $exception instanceof Exception\HttpForbiddenException:
-                $httpCode = 403;
-                break;
-            case $exception instanceof RouteNotFoundException:
-            case $exception instanceof Exception\HttpNotFoundException:
-                $httpCode = 404;
-                break;
-            case $exception instanceof Exception\HttpMethodNotAllowedException:
-                $httpCode = 405;
-                break;
-            case $exception instanceof Exception\HttpConflictException:
-                $httpCode = 409;
-                break;
-            case $exception instanceof Exception\HttpTooManyRequestsException:
-                $httpCode = 429;
-                break;
-            case $exception instanceof Exception\HttpServiceUnavailableException:
-                $httpCode = 503;
-                break;
-            default:
-                $httpCode = 500;
-        }
+        $httpCode = match (true) {
+            $exception instanceof Exception\HttpBadRequestException => 400,
+            $exception instanceof Exception\HttpUnauthorizedException => 401,
+            $exception instanceof Exception\HttpForbiddenException => 403,
+            $exception instanceof RouteNotFoundException, $exception instanceof Exception\HttpNotFoundException => 404,
+            $exception instanceof Exception\HttpMethodNotAllowedException => 405,
+            $exception instanceof Exception\HttpConflictException => 409,
+            $exception instanceof Exception\HttpTooManyRequestsException => 429,
+            $exception instanceof Exception\HttpServiceUnavailableException => 503,
+            default => 500,
+        };
 
         $template = $httpCode < 500 ? 'Error4XX.twig' : 'Error5XX.twig';
 

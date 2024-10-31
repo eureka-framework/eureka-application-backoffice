@@ -17,9 +17,9 @@ use Application\Service\JsonWebTokenService;
 use Application\Service\LoginService;
 use Eureka\Component\Orm\Exception\InvalidQueryException;
 use Eureka\Component\Orm\Exception\OrmException;
+use Psr\Clock\ClockInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Safe\Exceptions\JsonException;
 
 /**
  * Class TokenController
@@ -28,47 +28,28 @@ use Safe\Exceptions\JsonException;
  */
 class TokenController extends AbstractApiController
 {
-    /** @var JsonWebTokenService $jsonWebTokenService */
-    private JsonWebTokenService $jsonWebTokenService;
-
-    /** @var LoginService $userLoginService */
-    private LoginService $userLoginService;
-
-    /** @var CookieService $cookieService */
-    private CookieService $cookieService;
-
-    /**
-     * TokenController constructor.
-     *
-     * @param JsonWebTokenService $jsonWebTokenService
-     * @param LoginService $userLoginService
-     * @param CookieService $cookieService
-     */
     public function __construct(
-        JsonWebTokenService $jsonWebTokenService,
-        LoginService $userLoginService,
-        CookieService $cookieService
-    ) {
-        $this->jsonWebTokenService = $jsonWebTokenService;
-        $this->userLoginService    = $userLoginService;
-        $this->cookieService       = $cookieService;
-    }
+        private readonly JsonWebTokenService $jsonWebTokenService,
+        private readonly LoginService $userLoginService,
+        private readonly CookieService $cookieService,
+        private readonly ClockInterface $clock,
+    ) {}
 
     /**
      * @param ServerRequestInterface $serverRequest
      * @return ResponseInterface
      * @throws InvalidQueryException
      * @throws OrmException
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function get(ServerRequestInterface $serverRequest): ResponseInterface
     {
         $token = $this->userLoginService->login($serverRequest);
 
         //~ In web application context, we also persist the token in the cookie (secure & http only token)
-        $this->cookieService->set('Authorization', 'JWT ' . (string) $token);
+        $this->cookieService->set('Authorization', 'JWT ' . $token->toString());
 
-        return $this->getResponseJsonSuccess(['token' => (string) $token]);
+        return $this->getResponseJsonSuccess(['token' => $token->toString()]);
     }
 
     /**
@@ -81,7 +62,7 @@ class TokenController extends AbstractApiController
 
         $content = [
             'valid'   => $this->jsonWebTokenService->isValidToken($token),
-            'expired' => $token->isExpired(),
+            'expired' => $token->isExpired($this->clock->now()),
         ];
 
         return $this->getResponseJsonSuccess($content);
@@ -90,7 +71,7 @@ class TokenController extends AbstractApiController
     /**
      * @param ServerRequestInterface $serverRequest
      * @return ResponseInterface
-     * @throws JsonException|OrmException
+     * @throws OrmException
      */
     public function revoke(ServerRequestInterface $serverRequest): ResponseInterface
     {

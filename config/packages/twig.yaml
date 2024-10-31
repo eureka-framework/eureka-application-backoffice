@@ -1,18 +1,19 @@
 parameters:
+  twig.template.name: 'bootswatch'
+
+  twig.cache.dir: '%kernel.directory.cache%/%kernel.environment%/twig'
 
   twig.paths:
-    '../templates/common': 'common'
-    '../templates/layout': 'layout'
-    '../templates/macro':  'macro'
-    '../templates/mail':   'mail'
-    '../templates/app':    'app'
+    app:    '%kernel.directory.root%/templates/%twig.template.name%/app'
+    common: '%kernel.directory.root%/templates/%twig.template.name%/common'
+    layout: '%kernel.directory.root%/templates/%twig.template.name%/layout'
+    macro:  '%kernel.directory.root%/templates/%twig.template.name%/macro'
+    mail:   '%kernel.directory.root%/templates/%twig.template.name%/mail'
 
 services:
 
   _defaults:
-    autowire:      true
-    autoconfigure: true
-    public:        false
+    autowire: true
 
   Twig\Loader\FilesystemLoader: ~
 
@@ -20,8 +21,20 @@ services:
     arguments:
       $loader: '@Twig\Loader\FilesystemLoader'
       $options:
-        cache: "%kernel.directory.cache%/%kernel.environment%/twig"
-        debug: "%kernel.debug%"
+        cache: '%twig.cache.dir%'
+        debug: '%kernel.debug%'
 
   twig:
-    alias: Twig\Environment
+    alias: 'Twig\Environment'
+
+  Application\Service\Twig\TwigConfigurator:
+    arguments:
+      $twigPaths:       '%twig.paths%'
+
+  Application\Service\Twig\TwigHelper:
+    arguments:
+      $webAssetsPath:   '%app.public.assets.path%'
+
+  Application\Service\Twig\TwigCacheWarmer:
+    tags:
+      - { name: 'kernel.cache_warmer', priority: 0 }

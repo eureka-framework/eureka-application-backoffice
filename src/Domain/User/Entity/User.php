@@ -13,10 +13,6 @@ namespace Application\Domain\User\Entity;
 
 use Eureka\Component\Orm\EntityInterface;
 use Lcobucci\JWT\Token;
-use Safe\Exceptions\JsonException;
-
-use function Safe\json_decode;
-use function Safe\json_encode;
 
 /**
  * DataMapper Data class for table "user"
@@ -26,23 +22,23 @@ use function Safe\json_encode;
 class User extends Abstracts\AbstractUser implements EntityInterface
 {
     /** @var int MAX_ACTIVE_TOKEN_KEPT */
-    private const MAX_ACTIVE_TOKEN_KEPT = 10;
+    private const int MAX_ACTIVE_TOKEN_KEPT = 10;
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getTokenHashListDecoded(): array
     {
-        $tokenHashList = (string) $this->getTokenHashList();
+        $tokenHashList = $this->getTokenHashList();
 
         //~ Try to decode list
         try {
-            $tokenHashList = json_decode($tokenHashList);
-        } catch (JsonException $exception) {
+            $tokenHashList = \json_decode($tokenHashList, flags: \JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
             return [];
         }
 
-        if (!is_array($tokenHashList)) {
+        if (!\is_array($tokenHashList)) {
             $tokenHashList = [];
         }
 
@@ -60,16 +56,16 @@ class User extends Abstracts\AbstractUser implements EntityInterface
     /**
      * @param Token $token
      * @return void
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function revokeToken(Token $token): void
     {
         $tokenList = $this->getTokenHashListDecoded();
-        $key = array_search(md5((string) $token), $tokenList);
+        $key = \array_search(\hash('md5', $token->toString()), $tokenList);
 
         if ($key !== false) {
             unset($tokenList[$key]);
-            $this->setTokenHashList(json_encode($tokenList));
+            $this->setTokenHashList(\json_encode($tokenList, flags: \JSON_THROW_ON_ERROR));
         }
     }
 
@@ -79,21 +75,21 @@ class User extends Abstracts\AbstractUser implements EntityInterface
      */
     public function hasRegisteredToken(Token $token): bool
     {
-        $hash = md5((string) $token);
+        $hash = \hash('md5', $token->toString());
 
-        return in_array($hash, $this->getTokenHashListDecoded());
+        return \in_array($hash, $this->getTokenHashListDecoded(), true);
     }
 
     /**
      * @param Token $token
      * @return User
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function registerToken(Token $token): self
     {
         //~ Add token to list
         $accessTokenList   = $this->getTokenHashListDecoded();
-        $accessTokenList[] = md5((string) $token);
+        $accessTokenList[] = \hash('md5', $token->toString());
 
         //~ Remove the oldest token if necessary
         if (count($accessTokenList) > self::MAX_ACTIVE_TOKEN_KEPT) {
@@ -101,7 +97,7 @@ class User extends Abstracts\AbstractUser implements EntityInterface
         }
 
         //~ Set json_encode list into entity
-        $this->setTokenHashList(json_encode($accessTokenList));
+        $this->setTokenHashList(\json_encode($accessTokenList, flags: \JSON_THROW_ON_ERROR));
 
         return $this;
     }
@@ -109,14 +105,14 @@ class User extends Abstracts\AbstractUser implements EntityInterface
     /**
      * @param Token $token
      * @return $this
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function unregisterToken(Token $token): self
     {
         $tokenHashList = $this->getTokenHashListDecoded();
 
         //~ Search and remove token hash from list
-        $hash = md5((string) $token);
+        $hash = \hash('md5', $token->toString());
         $key  = array_search($hash, $tokenHashList);
 
         if ($key === false) {
@@ -126,7 +122,7 @@ class User extends Abstracts\AbstractUser implements EntityInterface
         unset($tokenHashList[$key]);
 
         //~ Set json_encode list into entity
-        $this->setTokenHashList(json_encode($tokenHashList));
+        $this->setTokenHashList(\json_encode($tokenHashList, flags: \JSON_THROW_ON_ERROR));
 
         return $this;
     }

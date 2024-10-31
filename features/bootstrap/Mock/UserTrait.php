@@ -9,9 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Application\Behat\Fixture;
+namespace Application\Behat\Mock;
 
 use Application\Behat\Context\Common\ClientApplicationContext;
+use Application\Behat\Helper\OrmTrait;
 use Application\Domain\User\Entity\User;
 use Application\Domain\User\Repository\UserRepositoryInterface;
 use Eureka\Component\Password\Password;
@@ -28,6 +29,8 @@ use PHPUnit\Framework\MockObject\Rule\AnyInvokedCount;
  */
 trait UserTrait
 {
+    use OrmTrait;
+
     /** @var UserRepositoryInterface|MockObject $repository */
     private UserRepositoryInterface $repository;
 
@@ -42,19 +45,19 @@ trait UserTrait
      *
      * @throws \Exception
      */
-    public function initializeUserRepository()
+    public function initializeUserRepository(): void
     {
         $this->registerMockService(
             UserRepositoryInterface::class,
             'persist',
-            true
+            true,
         );
 
         $container = ClientApplicationContext::getContainer();
 
-        $this->repository             = $container->get('Application\Domain\User\Repository\UserRepositoryInterface');
-        $this->validatorFactory       = $container->get('Eureka\Component\Validation\ValidatorFactory');
-        $this->validatorEntityFactory = $container->get('Eureka\Component\Validation\Entity\ValidatorEntityFactory');
+        $this->repository             = ClientApplicationContext::getService(UserRepositoryInterface::class);
+        $this->validatorFactory       = $this->getValidatorFactory();
+        $this->validatorEntityFactory = $this->getValidatorEntityFactory();
     }
 
     /**
@@ -133,6 +136,31 @@ trait UserTrait
             ->with('user_disabled@example.com')
             ->willReturn($entity)
         ;
+    }
+
+    /**
+     * @return User
+     */
+    private function getUser(
+        int $userId,
+        string $email,
+        string $password,
+        string $firstname,
+        bool $isEnabled,
+        string $token,
+    ): User
+    {
+        $entity = new User($this->repository, $this->validatorFactory, $this->validatorEntityFactory);
+        $entity->setId($userId);
+        $entity->setEmail($email);
+        $entity->setPassword((new Password($password))->getHash());
+        $entity->setFirstName($firstname);
+        $entity->setIsEnabled($isEnabled);
+        $entity->setDateCreate('2020-01-01 00:00:00');
+
+        $entity->registerToken($token);
+
+        return $entity;
     }
 
     /**

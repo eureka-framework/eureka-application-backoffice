@@ -1,4 +1,8 @@
 # Services Yaml file
 parameters:
-    app.name:    'eureka'
-    app.version: '1.0.0'
+  app.name: 'eureka'
+  app.version: '1.0.0'
+
+services:
+  Psr\Container\ContainerInterface:
+    alias: 'service_container'

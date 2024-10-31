@@ -11,29 +11,28 @@ declare(strict_types=1);
 
 namespace Application\Service;
 
-/**
- * Class CookieService
- *
- * @author Romain Cottard
- */
 class CookieService
 {
-    /** @var array $defaultOptions */
+    /** @var array{
+     *     expires: int,
+     *     path: string,
+     *     domain: string,
+     *     secure: bool,
+     *     httponly: bool,
+     *     samesite: 'Lax'|'lax'|'None'|'none'|'Strict'|'strict'
+     * } $defaultOptions
+     */
     private array $defaultOptions;
-
-    /** @var \DateTimeImmutable $dateNow */
     private \DateTimeImmutable $dateNow;
 
     /**
-     * Class constructor.
-     *
      * @param \DateTimeImmutable $dateNow
      * @param string $domain
      * @param int $defaultLifeTime
      * @param string $path
-     * @param bool|string $isSecure
-     * @param bool|string $isHttpOnly
-     * @param string $sameSite
+     * @param bool $isSecure
+     * @param bool $isHttpOnly
+     * @param 'Lax'|'lax'|'None'|'none'|'Strict'|'strict' $sameSite
      */
     public function __construct(
         \DateTimeImmutable $dateNow,
@@ -42,7 +41,7 @@ class CookieService
         string $path = '/',
         bool $isSecure = true,
         bool $isHttpOnly = true,
-        string $sameSite = 'None' // None || Lax  || Strict
+        string $sameSite = 'None', // None || Lax  || Strict
     ) {
         $this->dateNow = $dateNow;
 
@@ -60,13 +59,20 @@ class CookieService
     /**
      * @param string $name
      * @param string $value
-     * @param array $options
+     * @param array{
+     *     expires?: int,
+     *     path?: string,
+     *     domain?: string,
+     *     secure?: bool,
+     *     httponly?: bool,
+     *     samesite?: 'Lax'|'lax'|'None'|'none'|'Strict'|'strict'
+     * } $options
      * @return void
      */
-    public function set(string $name, string $value, array $options = [])
+    public function set(string $name, string $value, array $options = []): void
     {
         $options += $this->defaultOptions; // override default option & add missing options
 
-        setcookie($name, $value, $options);
+        \setcookie($name, $value, $options);
     }
 }

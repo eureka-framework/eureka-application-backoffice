@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) Romain Cottard
+ * Copyright (c) Deezer
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,12 +14,9 @@ namespace Application\Behat\Context\Common;
 use Behat\Behat\Context\Context;
 use Eureka\Kernel\Http\Application\Application;
 use Eureka\Kernel\Http\Kernel;
-use DG\BypassFinals;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Safe\Exceptions\JsonException;
-
-use function Safe\json_decode;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Class ClientApplicationContext
@@ -28,17 +25,10 @@ use function Safe\json_decode;
  */
 class ClientApplicationContext implements Context
 {
-    /** @var Kernel|null */
-    private static ?Kernel $kernel;
-
-    /** @var Application|null */
-    private static ?Application $application;
-
-    /** @var ResponseInterface|null $response */
-    private static ?ResponseInterface $response;
-
-    /** @var \stdClass|null $responseObject */
-    private static ?\stdClass $responseObject;
+    private static Kernel $kernel;
+    private static Application $application;
+    private static ?ResponseInterface $response = null;
+    private static ?\stdClass $responseObject = null;
 
     /**
      * Class constructor.
@@ -56,10 +46,9 @@ class ClientApplicationContext implements Context
      *
      * @BeforeSuite
      */
-    public static function prepare()
+    public static function prepare(): void
     {
         //~ Enable bypass final class for clients
-        BypassFinals::enable();
     }
 
     /**
@@ -81,8 +70,6 @@ class ClientApplicationContext implements Context
         //~ Reset vars & force reset application & kernel properties (to ensure we have no memory leak)
         self::$responseObject = null;
         self::$response       = null;
-        self::$application    = null;
-        self::$kernel         = null;
 
         //~ Always start a new kernel & application
         self::$kernel      = $this->getKernel();
@@ -95,7 +82,7 @@ class ClientApplicationContext implements Context
      * @param string $path
      * @param string $method
      * @return void
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function iSendTheRequestToTheEndpointWithHttpMethod(string $path, string $method): void
     {
@@ -106,7 +93,7 @@ class ClientApplicationContext implements Context
 
         //~ Get content response à json object decoded
         $responseString = (string) self::$response->getBody();
-        self::$responseObject = json_decode($responseString);
+        self::$responseObject = (object) \json_decode($responseString, flags: JSON_THROW_ON_ERROR);
 
         //~ Rewind response body (for further usage)
         self::$response->getBody()->rewind();
@@ -120,7 +107,7 @@ class ClientApplicationContext implements Context
      * @param string $path
      * @param string $method
      * @return void
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function iSendRequestsToTheEndpointWithHttpMethod(int $number, string $path, string $method): void
     {
@@ -136,19 +123,32 @@ class ClientApplicationContext implements Context
 
         //~ Get content response as json object decoded
         $responseString = (string) self::$response->getBody();
-        self::$responseObject = json_decode($responseString);
+        self::$responseObject = (object) \json_decode($responseString, flags: JSON_THROW_ON_ERROR);
 
         //~ Rewind response body (for further usage)
         self::$response->getBody()->rewind();
 
     }
 
-    /**
-     * @return ContainerInterface
-     */
-    public static function getContainer(): ContainerInterface
+    public static function getContainer(): ContainerInterface&ResetInterface
     {
-        return self::$kernel->getContainer();
+        /** @var ContainerInterface&ResetInterface $container */
+        $container = self::$kernel->getContainer();
+
+        return $container;
+    }
+
+    /**
+     * @template T
+     * @param class-string<T> $serviceName
+     * @return T
+     */
+    public static function getService(string $serviceName)
+    {
+        /** @var T $service */
+        $service = self::getContainer()->get($serviceName);
+
+        return $service;
     }
 
     /**
@@ -156,6 +156,10 @@ class ClientApplicationContext implements Context
      */
     public static function getResponse(): ResponseInterface
     {
+        if (self::$response === null) {
+            throw new \UnexpectedValueException('Response is null !');
+        }
+
         return self::$response;
     }
 
@@ -164,6 +168,10 @@ class ClientApplicationContext implements Context
      */
     public static function getResponseContentObject(): \stdClass
     {
+        if (self::$responseObject === null) {
+            throw new \UnexpectedValueException('Response object is null !');
+        }
+
         return self::$responseObject;
     }
 
@@ -173,7 +181,7 @@ class ClientApplicationContext implements Context
      */
     private static function getKernel(): Kernel
     {
-        $root  = realpath(__DIR__ . '/../../../..');
+        $root  = (string) realpath(__DIR__ . '/../../../..');
         $env   = 'test';
         $debug = true;
 

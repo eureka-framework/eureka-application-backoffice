@@ -1,71 +1,71 @@
 parameters:
 
-    menu.cookie_state_name: 'bo_menu_state'
+  menu.cookie_state_name: 'bo_menu_state'
 
-    menu.config.left:
+  menu.config.left:
 
-        home:
-            label: 'Dashboard'
-            icon:  'mdi mdi-speedometer'
-            route: 'home'
-            children: ~
+    home:
+      label: 'Dashboard'
+      icon: 'mdi mdi-speedometer'
+      route: 'home'
+      children: ~
 
-        page_basic_ui:
-            label: 'Basic UI Elements'
-            icon:  'mdi mdi-laptop'
-            route: 'http-basic-ui'
-            children:
-                - label: 'Buttons'
-                  route: 'page_buttons'
-                - label: 'Dropdowns'
-                  route: 'page_dropdowns'
-                - label: 'Typography'
-                  route: 'page_typography'
+    page_basic_ui:
+      label: 'Basic UI Elements'
+      icon: 'mdi mdi-laptop'
+      route: 'http-basic-ui'
+      children:
+        - label: 'Buttons'
+          route: 'page_buttons'
+        - label: 'Dropdowns'
+          route: 'page_dropdowns'
+        - label: 'Typography'
+          route: 'page_typography'
 
-        page_form_elements:
-            label: 'Form Elements'
-            icon:  'mdi mdi-playlist-play'
-            route: 'page_form'
-            children: ~
+    page_form_elements:
+      label: 'Form Elements'
+      icon: 'mdi mdi-playlist-play'
+      route: 'page_form'
+      children: ~
 
-        page_basic_table:
-            label: 'Tables'
-            icon:  'mdi mdi-table-large'
-            route: 'page_tables'
-            children: ~
+    page_basic_table:
+      label: 'Tables'
+      icon: 'mdi mdi-table-large'
+      route: 'page_tables'
+      children: ~
 
-        page_chartjs:
-            label: 'Charts'
-            icon:  'mdi mdi-chart-bar'
-            route: 'page_charts'
-            children: ~
+    page_chartjs:
+      label: 'Charts'
+      icon: 'mdi mdi-chart-bar'
+      route: 'page_charts'
+      children: ~
 
-        page_icons:
-            label: 'Icons'
-            icon:  'mdi mdi-contacts'
-            route: 'page_icons'
-            children: ~
+    page_icons:
+      label: 'Icons'
+      icon: 'mdi mdi-contacts'
+      route: 'page_icons'
+      children: ~
 
-        page_user_pages:
-            label: 'User Pages'
-            icon:  'mdi mdi-security'
-            route: 'http-user-pages'
-            children:
-                - label: 'Blank Page'
-                  route: 'page_blank'
-                - label: '404'
-                  route: 'page_404'
-                - label: '500'
-                  route: 'page_500'
-                - label: 'Login'
-                  route: 'page_login'
-                - label: 'Register'
-                  route: 'page_register'
+    page_user_pages:
+      label: 'User Pages'
+      icon: 'mdi mdi-security'
+      route: 'http-user-pages'
+      children:
+        - label: 'Blank Page'
+          route: 'page_blank'
+        - label: '404'
+          route: 'page_404'
+        - label: '500'
+          route: 'page_500'
+        - label: 'Login'
+          route: 'page_login'
+        - label: 'Register'
+          route: 'page_register'
 
-        page_documentation:
-            label: 'Documentation'
-            icon:  'mdi mdi-file-document-box'
-            route: '#'
-            children: ~
+    page_documentation:
+      label: 'Documentation'
+      icon: 'mdi mdi-file-document-box'
+      route: '#'
+      children: ~
 
-    menu.config.right: []
+  menu.config.right: [ ]

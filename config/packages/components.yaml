@@ -1,15 +1,13 @@
 services:
 
-    _defaults:
-        autowire:      true
-        autoconfigure: true
-        public:        false
+  _defaults:
+    autowire: true
 
-    Eureka\Component\Password\:
-        resource: '../../vendor/eureka/component-password/src'
+  Eureka\Component\Password\:
+    resource: '../../vendor/eureka/component-password/src'
 
-    Eureka\Component\Web\:
-        resource: '../../vendor/eureka/component-web/src'
+  Eureka\Component\Web\:
+    resource: '../../vendor/eureka/component-web/src'
 
-    session:
-        alias: Eureka\Component\Web\Session\Session
+  session:
+    alias: 'Eureka\Component\Web\Session\Session'

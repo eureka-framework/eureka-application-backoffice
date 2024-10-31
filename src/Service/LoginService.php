@@ -21,7 +21,6 @@ use Eureka\Component\Orm\Exception\InvalidQueryException;
 use Eureka\Component\Orm\Exception\OrmException;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\ServerRequestInterface;
-use Safe\Exceptions\JsonException;
 
 /**
  * Class LoginService
@@ -30,51 +29,32 @@ use Safe\Exceptions\JsonException;
  */
 class LoginService
 {
-    /** @var UserRepositoryInterface $userRepository */
-    private UserRepositoryInterface $userRepository;
-
-    /** @var JsonWebTokenService $jsonWebTokenService */
-    private JsonWebTokenService $jsonWebTokenService;
-
-    /** @var PasswordChecker $passwordChecker */
-    private PasswordChecker $passwordChecker;
-
-    /**
-     * LoginService constructor.
-     *
-     * @param JsonWebTokenService $jsonWebTokenService
-     * @param UserRepositoryInterface $userRepository
-     * @param PasswordChecker $passwordChecker
-     */
     public function __construct(
-        JsonWebTokenService $jsonWebTokenService,
-        UserRepositoryInterface $userRepository,
-        PasswordChecker $passwordChecker
-    ) {
-        $this->jsonWebTokenService = $jsonWebTokenService;
-        $this->userRepository      = $userRepository;
-        $this->passwordChecker     = $passwordChecker;
-    }
+        private readonly JsonWebTokenService $jsonWebTokenService,
+        private readonly UserRepositoryInterface $userRepository,
+        private readonly PasswordChecker $passwordChecker,
+    ) {}
 
     /**
      * @param ServerRequestInterface $serverRequest
      * @return Token
      * @throws InvalidQueryException
      * @throws OrmException
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function login(ServerRequestInterface $serverRequest): Token
     {
+        /** @var array{email?: string, password?: string} $body */
         $body = $serverRequest->getParsedBody();
 
-        $email    = isset($body['email']) ? trim($body['email']) : '';
-        $password = isset($body['password']) ? trim($body['password']) : '';
+        $email    = isset($body['email']) ? \trim($body['email']) : '';
+        $password = isset($body['password']) ? \trim($body['password']) : '';
 
-        if (empty($email) || !is_string($email)) {
+        if ($email === '') {
             throw new HttpBadRequestException('Error with email (empty or not well formatted value)', 1200);
         }
 
-        if (empty($password) || !is_string($password)) {
+        if ($password === '') {
             throw new HttpBadRequestException('Error with password (empty or not well formatted value)', 1201);
         }
 
@@ -106,14 +86,14 @@ class LoginService
     /**
      * @param ServerRequestInterface $serverRequest
      * @return void
-     * @throws JsonException
+     * @throws \JsonException
      * @throws OrmException
      */
     public function logout(ServerRequestInterface $serverRequest): void
     {
         $token = $this->jsonWebTokenService->getTokenFromServerRequest($serverRequest);
 
-        $userId = (int) $token->getClaim('uid');
+        $userId = (int) $token->claims()->get('uid', 0);
         $user = $this->userRepository->findById($userId);
 
         $user->revokeToken($token);

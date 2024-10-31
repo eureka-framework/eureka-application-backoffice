@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) Romain Cottard
+ * Copyright (c) Deezer
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Application\Behat\Helper;
 
 use Application\Behat\Context\Common\ClientApplicationContext;
-use PHPUnit\Framework\MockObject\Generator;
+use PHPUnit\Framework\MockObject\Generator\Generator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub\ConsecutiveCalls;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
@@ -28,10 +28,16 @@ trait ServiceMockAwareTrait
      * @param string $class
      * @param bool $enableOriginalConstructor
      * @return MockObject
+     * @throws \ReflectionException
      */
     protected function getMock(string $class, bool $enableOriginalConstructor = false): MockObject
     {
-        return (new Generator())->getMock($class, [], [], '', $enableOriginalConstructor);
+        return (new Generator())->testDouble(
+            $class,
+            mockObject: true,
+            markAsMockObject: true,
+            callOriginalConstructor: $enableOriginalConstructor,
+        );
     }
 
     /**
@@ -45,12 +51,14 @@ trait ServiceMockAwareTrait
         MockObject $mock,
         string $method,
         $return,
-        bool $useConsecutiveCall = false
+        bool $useConsecutiveCall = false,
     ): MockObject {
         if ($return instanceof \Throwable) {
             $mock->method($method)->willThrowException($return);
         } elseif ($useConsecutiveCall) {
             $mock->method($method)->will(new ConsecutiveCalls($return));
+        } elseif ($return === 'VOID') {
+            $mock->method($method);
         } else {
             $mock->method($method)->willReturn($return);
         }
@@ -64,12 +72,13 @@ trait ServiceMockAwareTrait
      * @param mixed $return
      * @param bool $useConsecutiveCall
      * @return void
+     * @throws \ReflectionException
      */
     protected function registerMockService(
-        $class,
+        array|string $class,
         string $method,
-        $return,
-        bool $useConsecutiveCall = false
+        mixed $return,
+        bool $useConsecutiveCall = false,
     ): void {
 
         $serviceId = $class;
@@ -87,7 +96,7 @@ trait ServiceMockAwareTrait
             $mock = $this->getMock($class);
             $mock = $this->mockMethod($mock, $method, $return, $useConsecutiveCall);
             $container->set($serviceId, $mock);
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidArgumentException) {
             $mock = $container->get($serviceId);
             $this->mockMethod($mock, $method, $return, $useConsecutiveCall); // update mock will update the service in container
         }

@@ -11,11 +11,13 @@ declare(strict_types=1);
 
 namespace Application\Domain\User\Entity\Abstracts;
 
-use Eureka\Component\Orm\AbstractEntity;
-use Eureka\Component\Orm\RepositoryInterface;
+use Eureka\Component\Orm\EntityInterface;
+use Eureka\Component\Orm\Traits;
 use Eureka\Component\Validation\Exception\ValidationException;
 use Eureka\Component\Validation\ValidatorFactoryInterface;
 use Eureka\Component\Validation\ValidatorEntityFactoryInterface;
+use Application\Domain\User\Entity\User;
+use Application\Domain\User\Repository\UserRepositoryInterface;
 
 /**
  * Abstract User data class.
@@ -25,10 +27,19 @@ use Eureka\Component\Validation\ValidatorEntityFactoryInterface;
  *
  * @author Eureka Orm Generator
  */
-abstract class AbstractUser extends AbstractEntity
+abstract class AbstractUser implements EntityInterface
 {
+    /** @use Traits\EntityTrait<UserRepositoryInterface, User> */
+    use Traits\EntityTrait;
+
     /** @var int $id Property id */
     protected int $id = 0;
+
+    /** @var bool $isEnabled Property isEnabled */
+    protected bool $isEnabled = true;
+
+    /** @var int $privileges Property privileges */
+    protected int $privileges = 0;
 
     /** @var string $email Property email */
     protected string $email = '';
@@ -48,9 +59,6 @@ abstract class AbstractUser extends AbstractEntity
     /** @var string $tokenHashList Property tokenHashList */
     protected string $tokenHashList = '[]';
 
-    /** @var bool $isEnabled Property isEnabled */
-    protected bool $isEnabled = true;
-
     /** @var string|null $dateFirstAccess Property dateFirstAccess */
     protected ?string $dateFirstAccess = null;
 
@@ -66,20 +74,33 @@ abstract class AbstractUser extends AbstractEntity
     /**
      * AbstractEntity constructor.
      *
-     * @param RepositoryInterface $repository
+     * @param UserRepositoryInterface $repository
      * @param ValidatorFactoryInterface|null $validatorFactory
      * @param ValidatorEntityFactoryInterface|null $validatorEntityFactory
      */
     public function __construct(
-        RepositoryInterface $repository,
+        UserRepositoryInterface $repository,
         ?ValidatorFactoryInterface $validatorFactory = null,
         ?ValidatorEntityFactoryInterface $validatorEntityFactory = null
     ) {
         $this->setRepository($repository);
         $this->setValidatorFactories($validatorFactory, $validatorEntityFactory);
 
+        $this->initializeValidatorConfig();
+    }
+
+    protected function initializeValidatorConfig(): void
+    {
         $this->setValidatorConfig([
             'user_id' => [
+                'type'      => 'integer',
+                'options'   => ['min_range' => -9.223372036854776E+18, 'max_range' => 9223372036854775807],
+            ],
+            'user_is_enabled' => [
+                'type'      => 'boolean',
+                'options'   => [],
+            ],
+            'user_privileges' => [
                 'type'      => 'integer',
                 'options'   => ['min_range' => -9.223372036854776E+18, 'max_range' => 9223372036854775807],
             ],
@@ -106,10 +127,6 @@ abstract class AbstractUser extends AbstractEntity
             'user_token_hash_list' => [
                 'type'      => 'string',
                 'options'   => ['min_length' => 0, 'max_length' => 1000],
-            ],
-            'user_is_enabled' => [
-                'type'      => 'boolean',
-                'options'   => [],
             ],
             'user_date_first_access' => [
                 'type'      => 'datetime',
@@ -148,6 +165,26 @@ abstract class AbstractUser extends AbstractEntity
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * Get value for property "user_is_enabled"
+     *
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->isEnabled;
+    }
+
+    /**
+     * Get value for property "user_privileges"
+     *
+     * @return int
+     */
+    public function getPrivileges(): int
+    {
+        return $this->privileges;
     }
 
     /**
@@ -208,16 +245,6 @@ abstract class AbstractUser extends AbstractEntity
     public function getTokenHashList(): string
     {
         return $this->tokenHashList;
-    }
-
-    /**
-     * Get value for property "user_is_enabled"
-     *
-     * @return bool
-     */
-    public function isEnabled(): bool
-    {
-        return $this->isEnabled;
     }
 
     /**
@@ -287,9 +314,49 @@ abstract class AbstractUser extends AbstractEntity
      * @return $this
      * @throws ValidationException
      */
-    public function setAutoIncrementId(int $id): self
+    public function setAutoIncrementId(int $id): static
     {
         return $this->setId($id);
+    }
+
+    /**
+     * Set value for property "user_is_enabled"
+     *
+     * @param  bool $isEnabled
+     * @return $this
+     * @throws ValidationException
+     */
+    public function setIsEnabled(bool $isEnabled): self
+    {
+        $this->validateInput('user_is_enabled', $isEnabled);
+
+        if ($this->exists() && $this->isEnabled !== $isEnabled) {
+            $this->markFieldAsUpdated('isEnabled');
+        }
+
+        $this->isEnabled = $isEnabled;
+
+        return $this;
+    }
+
+    /**
+     * Set value for property "user_privileges"
+     *
+     * @param  int $privileges
+     * @return $this
+     * @throws ValidationException
+     */
+    public function setPrivileges(int $privileges): self
+    {
+        $this->validateInput('user_privileges', $privileges);
+
+        if ($this->exists() && $this->privileges !== $privileges) {
+            $this->markFieldAsUpdated('privileges');
+        }
+
+        $this->privileges = $privileges;
+
+        return $this;
     }
 
     /**
@@ -408,26 +475,6 @@ abstract class AbstractUser extends AbstractEntity
         }
 
         $this->tokenHashList = $tokenHashList;
-
-        return $this;
-    }
-
-    /**
-     * Set value for property "user_is_enabled"
-     *
-     * @param  bool $isEnabled
-     * @return $this
-     * @throws ValidationException
-     */
-    public function setIsEnabled(bool $isEnabled): self
-    {
-        $this->validateInput('user_is_enabled', $isEnabled);
-
-        if ($this->exists() && $this->isEnabled !== $isEnabled) {
-            $this->markFieldAsUpdated('isEnabled');
-        }
-
-        $this->isEnabled = $isEnabled;
 
         return $this;
     }

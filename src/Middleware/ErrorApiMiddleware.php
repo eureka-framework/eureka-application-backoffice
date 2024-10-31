@@ -24,18 +24,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ErrorApiMiddleware implements MiddlewareInterface
 {
-    /** @var ErrorControllerInterface $container */
-    protected ErrorControllerInterface $controller;
-
-    /**
-     * ErrorMiddleware constructor.
-     *
-     * @param ErrorControllerInterface $errorController
-     */
-    public function __construct(ErrorControllerInterface $errorController)
-    {
-        $this->controller = $errorController;
-    }
+    public function __construct(private readonly ErrorControllerInterface $controller) {}
 
     /**
      * Process an incoming server request and return a response, optionally delegating
@@ -44,7 +33,6 @@ class ErrorApiMiddleware implements MiddlewareInterface
      * @param ServerRequestInterface $serverRequest
      * @param RequestHandlerInterface $handler
      * @return ResponseInterface
-     * @throws
      */
     public function process(ServerRequestInterface $serverRequest, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -71,7 +59,6 @@ class ErrorApiMiddleware implements MiddlewareInterface
      * @param ServerRequestInterface $serverRequest
      * @param \Exception $exception
      * @return ResponseInterface
-     * @throws
      */
     private function getErrorResponse(ServerRequestInterface $serverRequest, \Exception $exception): ResponseInterface
     {

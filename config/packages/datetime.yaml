@@ -1,9 +1,7 @@
 services:
   # default configuration for services in *this* file
   _defaults:
-    autowire:      true
-    autoconfigure: true
-    public:        false
+    autowire: true
 
   #~ Date provider (time zone UTC & date time now UTC)
   application.date.time.zone.utc:
@@ -14,7 +12,7 @@ services:
   application.date.time.now.utc:
     class: DateTimeImmutable
     arguments:
-      $time: 'now'
+      $datetime: 'now'
       $timezone: '@application.date.time.zone.utc'
 
   DateTimeImmutable:

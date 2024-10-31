@@ -1,52 +1,53 @@
 parameters:
 
-    #~ Comment part
-    orm.comment.author:    'Eureka Orm Generator'
-    orm.comment.copyright: 'Romain Cottard'
+  #~ Comment part
+  orm.comment.author:    'Eureka Orm Generator'
+  orm.comment.copyright: 'Romain Cottard'
 
-    #~ Namespace base config
-    orm.base_namespace.entity:     'Application\Domain'
-    orm.base_namespace.mapper:     'Application\Domain'
-    orm.base_namespace.repository: 'Application\Domain'
+  #~ Namespace base config
+  orm.base_namespace.entity:     'Application\Domain'
+  orm.base_namespace.mapper:     'Application\Domain'
+  orm.base_namespace.repository: 'Application\Domain'
 
-    #~ Path base config
-    orm.base_path.entity:     '%kernel.directory.root%/src/Domain'
-    orm.base_path.mapper:     '%kernel.directory.root%/src/Domain'
-    orm.base_path.repository: '%kernel.directory.root%/src/Domain'
+  #~ Path base config
+  orm.base_path.entity:     '%kernel.directory.root%/src/Domain'
+  orm.base_path.mapper:     '%kernel.directory.root%/src/Domain'
+  orm.base_path.repository: '%kernel.directory.root%/src/Domain'
 
-    #~ Cache base config
-    orm.cache.enabled: false
-    orm.cache.prefix: 'application.'
+  #~ Cache base config
+  orm.cache.enabled: false
+  orm.cache.prefix: 'application.'
 
-    #~ Validation
-    orm.validation.enabled: true
-    orm.validation.auto: true
+  #~ Validation
+  orm.validation.enabled: true
+  orm.validation.auto:    true
 
-    #~ Subdomain config
-    orm.config.subdomain.common: 'Common'
+  #~ Subdomain config
+  orm.config.subdomain.common: 'Common'
 
-    #~ Configs
-    orm.configs:
-        user: '%orm.config.user%'
+  #~ Configs
+  orm.configs:
+    user: '%orm.config.user%'
 
 services:
-    _defaults:
-        public:        false
-        autowire:      true
-        autoconfigure: true
+  _defaults:
+    autowire: true
 
-    Eureka\Component\Orm\:
-        resource: '../../vendor/eureka/component-orm/src/*'
-        exclude: '../../vendor/eureka/component-orm/src/{Script}'
+  Eureka\Component\Orm\:
+    resource: '../../vendor/eureka/component-orm/src/*'
+    exclude:  '../../vendor/eureka/component-orm/src/{Script}'
 
-    Eureka\Component\Validation\:
-        resource: '../../vendor/eureka/component-validation/src/*'
+  ######################################################################################################################
+  # Eureka ORM
+  ######################################################################################################################
+  Eureka\Component\Validation\:
+    resource: '../../vendor/eureka/component-validation/src/*'
 
-    #~ ORM Generator Script (need to be public for Console)
-    Eureka\Component\Orm\Script\Generator:
-        public: true
 
-    #~ Public factory alias for ORM Generator
-    database.factory:
-        public: true
-        alias: 'Eureka\Component\Database\ConnectionFactory'
+  ######################################################################################################################
+  # ORM Script generator
+  ######################################################################################################################
+  Eureka\Component\Orm\Script\Generator:
+    public: true
+    arguments:
+      $ormConfigs: '%orm.configs%'

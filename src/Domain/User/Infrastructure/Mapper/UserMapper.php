@@ -17,6 +17,7 @@ use Eureka\Component\Orm\EntityInterface;
 use Eureka\Component\Orm\Exception\EntityNotExistsException;
 use Eureka\Component\Orm\Exception\InvalidQueryException;
 use Eureka\Component\Orm\Exception\OrmException;
+use Eureka\Component\Orm\Traits;
 use Eureka\Component\Orm\Query\SelectBuilder;
 
 /**
@@ -26,9 +27,10 @@ use Eureka\Component\Orm\Query\SelectBuilder;
  */
 class UserMapper extends Abstracts\AbstractUserMapper implements UserRepositoryInterface
 {
+    /** @use Traits\RepositoryTrait<UserRepositoryInterface, User> */
+    use Traits\RepositoryTrait;
+
     /**
-     * @param string $email
-     * @return User|EntityInterface
      * @throws EntityNotExistsException
      * @throws InvalidQueryException
      * @throws OrmException

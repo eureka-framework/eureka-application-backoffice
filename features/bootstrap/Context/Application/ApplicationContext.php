@@ -18,6 +18,4 @@ use Behat\Behat\Context\Context;
  *
  * @author Romain Cottard
  */
-class ApplicationContext implements Context
-{
-}
+class ApplicationContext implements Context {}
