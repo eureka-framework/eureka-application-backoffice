@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace Application\Controller\Web\User;
 
-use Application\Controller\Common\AbstractWebController;
-use Eureka\Kernel\Http\Exception\HttpNotFoundException;
+use Application\Controller\Web\AbstractWebController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

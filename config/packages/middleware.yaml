@@ -2,8 +2,7 @@ parameters:
 
   app.middleware:
     timeLogger:     'Eureka\Kernel\Http\Middleware\ResponseTimeLoggerMiddleware'
-    errorWeb:       'Eureka\Kernel\Http\Middleware\ErrorMiddleware'
-    errorApi:       'Application\Middleware\ErrorApiMiddleware'
+    error:          'Eureka\Kernel\Http\Middleware\ErrorMiddleware'
     twig:           'Application\Middleware\TwigMiddleware'
     router:         'Eureka\Kernel\Http\Middleware\RouterMiddleware'
     rateLimiter:    'Eureka\Kernel\Http\Middleware\RateLimiterMiddleware'
@@ -32,8 +31,3 @@ services:
   Eureka\Kernel\Http\Middleware\ErrorMiddleware:
     arguments:
       $errorController: '@Application\Controller\Web\Error\ErrorController'
-
-  #~ Error middleware for api part of the application
-  Application\Middleware\ErrorApiMiddleware:
-    arguments:
-      $errorController: '@Application\Controller\Api\Error\ErrorController'

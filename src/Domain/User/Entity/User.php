@@ -29,11 +29,11 @@ class User extends Abstracts\AbstractUser implements EntityInterface
      */
     public function getTokenHashListDecoded(): array
     {
-        $tokenHashList = $this->getTokenHashList();
+        $tokenHashListString = $this->getTokenHashList();
 
         //~ Try to decode list
         try {
-            $tokenHashList = \json_decode($tokenHashList, flags: \JSON_THROW_ON_ERROR);
+            $tokenHashList = \json_decode($tokenHashListString, flags: \JSON_THROW_ON_ERROR);
         } catch (\JsonException) {
             return [];
         }
@@ -42,6 +42,7 @@ class User extends Abstracts\AbstractUser implements EntityInterface
             $tokenHashList = [];
         }
 
+        /** @var array<string> $tokenHashList */
         return $tokenHashList;
     }
 

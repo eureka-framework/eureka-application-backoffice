@@ -14,7 +14,8 @@
 
   "autoload": {
     "psr-4": {
-      "Application\\": "./src"
+      "Application\\": "./src",
+      "Application\\Script\\": "./scripts"
     }
   },
 
@@ -48,28 +49,25 @@
     "lcobucci/clock": "^3.3.1",
     "lcobucci/jwt": "^5.3.0",
     "nyholm/psr7": "^1.8.2",
+    "psr/clock": "^1.0.0",
     "psr/container": "^2.0.2",
     "psr/http-message": "^2.0.0",
     "psr/http-server-handler": "^1.0.2",
     "psr/http-server-middleware": "^1.0.2",
     "psr/cache": "^3.0.0",
     "psr/log": "^3.0.2",
-    "symfony/cache": "^7.1.5",
-    "symfony/finder": "^7.1.4",
-    "symfony/routing": "^7.1.4",
+    "symfony/cache": "^7.1.6",
+    "symfony/finder": "^7.1.6",
+    "symfony/routing": "^7.1.6",
     "twig/twig": "^v3.14.0"
   },
 
   "require-dev": {
-    "behat/behat": "^3.14.0",
-    "emuse/behat-html-formatter": "^2.0.0",
     "friendsofphp/php-cs-fixer": "^3.64.0",
-    "justinrainbow/json-schema": "^5.3.0",
-    "phpstan/phpstan": "^1.12.5",
+    "phpstan/phpstan": "^1.12.7",
     "phpstan/phpstan-phpunit": "^1.4.0",
     "phpunit/phpcov": "^10.0.0",
-    "phpunit/phpunit": "^11.3.6",
-    "shipmonk/composer-dependency-analyser": "^1.7.0",
-    "symfony/dependency-injection": "^7.1.5"
+    "phpunit/phpunit": "^11.4.3",
+    "shipmonk/composer-dependency-analyser": "^1.7.0"
   }
 }

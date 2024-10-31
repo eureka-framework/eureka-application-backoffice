@@ -18,23 +18,9 @@ services:
     resource: '../../src/*'
     exclude:  '../../src/{Controller,Middleware,Domain}'
 
-#  Application\Script\:
-#    resource: '../../scripts/*'
-#    public: true
-
-  #~ Application controllers
-  Application\Controller\Api\:
-    resource: '../../src/Controller/Api'
-    public: true # services called in ControllerMiddleware
-    calls:
-      - setLogger:               [ ]
-      - setRouter:               [ '@router' ]
-      - setResponseFactory:      [ '@response_factory' ]
-      - setRequestFactory:       [ '@request_factory' ]
-      - setServerRequestFactory: [ '@server_request_factory' ]
-      - setStreamFactory:        [ '@stream_factory' ]
-      - setUriFactory:           [ '@uri_factory' ]
-      #- setSession:              [ '@session' ]
+  Application\Script\:
+    resource: '../../scripts/*'
+    public: true
 
   #~ Application controllers
   Application\Controller\Web\:

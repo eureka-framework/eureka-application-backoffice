@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Application\Controller\Web\Page;
 
-use Application\Controller\Common\AbstractWebController;
+use Application\Controller\Web\AbstractWebController;
 use Eureka\Kernel\Http\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -44,9 +44,10 @@ class PageController extends AbstractWebController
      */
     public function index(ServerRequestInterface $serverRequest): ResponseInterface
     {
+        /** @var string $page */
         $page = $serverRequest->getAttribute('page');
 
-        if (!in_array($page, self::ALLOWED_PAGES)) {
+        if (!in_array($page, self::ALLOWED_PAGES, true)) {
             throw new HttpNotFoundException('Page not found', 404);
         }
 

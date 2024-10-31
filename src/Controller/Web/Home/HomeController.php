@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Application\Controller\Web\Home;
 
-use Application\Controller\Common\AbstractWebController;
+use Application\Controller\Web\AbstractWebController;
 use Psr\Http\Message\ResponseInterface;
 
 /**

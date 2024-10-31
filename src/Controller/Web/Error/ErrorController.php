@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Application\Controller\Web\Error;
 
-use Application\Controller\Common\AbstractWebController;
+use Application\Controller\Web\AbstractWebController;
 use Eureka\Component\Web\Notification\NotificationType;
 use Eureka\Kernel\Http\Controller\ErrorControllerInterface;
 use Eureka\Kernel\Http\Exception;
@@ -30,13 +30,13 @@ class ErrorController extends AbstractWebController implements ErrorControllerIn
      * @param ServerRequestInterface $serverRequest
      * @param \Exception $exception
      * @return ResponseInterface
-     * @throws
+     * @throws \Throwable
      */
     public function error(ServerRequestInterface $serverRequest, \Exception $exception): ResponseInterface
     {
         //~ Handle authentication errors & redirect to user login page
         if ($exception->getCode() >= 1050 && $exception->getCode() <= 1054 || $exception->getCode() >= 1060) {
-            $this->addFlashNotification($exception->getMessage(), NotificationType::ERROR);
+            $this->addFlashNotification($exception->getMessage(), NotificationType::Error);
             $this->redirect($this->getRouteUri('user_login'));
         }
 

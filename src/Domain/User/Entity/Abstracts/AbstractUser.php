@@ -81,7 +81,7 @@ abstract class AbstractUser implements EntityInterface
     public function __construct(
         UserRepositoryInterface $repository,
         ?ValidatorFactoryInterface $validatorFactory = null,
-        ?ValidatorEntityFactoryInterface $validatorEntityFactory = null
+        ?ValidatorEntityFactoryInterface $validatorEntityFactory = null,
     ) {
         $this->setRepository($repository);
         $this->setValidatorFactories($validatorFactory, $validatorEntityFactory);

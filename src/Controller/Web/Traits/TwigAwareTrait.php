@@ -9,10 +9,13 @@
 
 declare(strict_types=1);
 
-namespace Application\Controller\Common\Traits;
+namespace Application\Controller\Web\Traits;
 
 use Eureka\Kernel\Http\Service\DataCollection;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Trait TwigControllerAwareTrait
@@ -21,17 +24,14 @@ use Twig\Environment;
  */
 trait TwigAwareTrait
 {
-    /** @var Environment */
     private Environment $twig;
-
-    /** @var DataCollection|null $context Data collection object. */
     protected ?DataCollection $context = null;
 
     /**
      * @param Environment $twig
      * @return void
      */
-    public function setTwig(Environment $twig)
+    public function setTwig(Environment $twig): void
     {
         $this->twig = $twig;
     }
@@ -41,7 +41,7 @@ trait TwigAwareTrait
      *
      * @return DataCollection
      */
-    protected function getContext()
+    protected function getContext(): DataCollection
     {
         if ($this->context === null) {
             $this->context = new DataCollection();
@@ -53,7 +53,7 @@ trait TwigAwareTrait
     /**
      * @param string $name
      * @return string
-     * @throws
+     * @throws LoaderError|RuntimeError|SyntaxError
      */
     protected function render(string $name): string
     {

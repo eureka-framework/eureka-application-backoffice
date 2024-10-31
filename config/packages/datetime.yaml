@@ -17,3 +17,11 @@ services:
 
   DateTimeImmutable:
     alias: 'application.date.time.now.utc'
+
+  #~ Clock provider (system clock)
+  clock.system:
+    class:   Lcobucci\Clock\SystemClock
+    factory: [ 'Lcobucci\Clock\SystemClock', 'fromUTC' ]
+
+  Psr\Clock\ClockInterface:
+    alias: 'clock.system'

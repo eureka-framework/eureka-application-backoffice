@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Application\Controller\Common\Traits;
+namespace Application\Controller\Web\Traits;
 
 /**
  * Trait AssetsAwareTrait
@@ -21,10 +21,10 @@ trait AssetsAwareTrait
     /** @var string $rootDirectory */
     protected string $rootDirectory;
 
-    /** @var array $jsFiles */
+    /** @var array<string, string[]> $jsFiles */
     protected array $jsFiles = [];
 
-    /** @var array $cssFiles */
+    /** @var array<string, string[]> $cssFiles */
     protected array $cssFiles = [];
 
     /**
@@ -37,7 +37,7 @@ trait AssetsAwareTrait
     }
 
     /**
-     * @return array
+     * @return array<string, string[]>
      */
     protected function getCssFiles(): array
     {
@@ -45,7 +45,7 @@ trait AssetsAwareTrait
     }
 
     /**
-     * @return array
+     * @return array<string, string[]>
      */
     protected function getJsFiles(): array
     {
@@ -54,17 +54,19 @@ trait AssetsAwareTrait
 
     /**
      * @return void
+     * @throws \JsonException
      */
     protected function initializeAssets(): void
     {
         $entryFile    = $this->rootDirectory . '/web/assets/entrypoints.json';
         $manifestFile = $this->rootDirectory . '/web/assets/manifest.json';
 
-        if (!is_readable($entryFile) || !is_readable($manifestFile)) {
+        if (!\is_readable($entryFile) || !\is_readable($manifestFile)) {
             throw new \RuntimeException('entrypoints.json or manifest.json file is not readable.');
         }
 
-        $entrypoints = json_decode(file_get_contents($entryFile), true);
+        /** @var array{entrypoints: array<string, array{js: string[], css: string[]}>} $entrypoints */
+        $entrypoints = \json_decode((string) \file_get_contents($entryFile), true, flags: \JSON_THROW_ON_ERROR);
 
         $this->cssFiles = [];
         $this->jsFiles  = [];
@@ -80,15 +82,15 @@ trait AssetsAwareTrait
 
             foreach ($entrypoint['js'] as $file) {
                 if (!isset($existingFiles['js'][$file])) {
-                    $existingFiles['js'][$file] = true;
-                    $this->jsFiles[$entryName][]  = $file;
+                    $existingFiles['js'][$file]  = true;
+                    $this->jsFiles[$entryName][] = $file;
                 }
             }
 
             foreach ($entrypoint['css'] as $file) {
                 if (!isset($existingFiles['css'][$file])) {
-                    $existingFiles['css'][$file] = true;
-                    $this->cssFiles[$entryName][]  = $file;
+                    $existingFiles['css'][$file]  = true;
+                    $this->cssFiles[$entryName][] = $file;
                 }
             }
         }

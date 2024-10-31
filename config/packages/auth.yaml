@@ -1,3 +1,7 @@
+parameters:
+  app.token.secret.key:            'default_app_token_secret_key'
+  app.token.secret.reset_password: 'default_app_token_secret_reset_password'
+
 services:
   _defaults:
     autowire: true
@@ -39,7 +43,7 @@ services:
     class: 'Lcobucci\JWT\Signer\Key\InMemory'
     factory: [ 'Lcobucci\JWT\Signer\Key\InMemory', 'plainText' ]
     arguments:
-      $contents: '%api.starmania.jwt.secret_key.reset_password%'
+      $contents: '%app.token.secret.reset_password%'
 
   app.reset_password.jwt.constraint.signed_with:
     class: 'Lcobucci\JWT\Validation\Constraint\SignedWith'

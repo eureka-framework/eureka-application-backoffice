@@ -50,7 +50,7 @@ abstract class AbstractUserMapper
         ValidatorEntityFactory|null $validatorEntityFactory = null,
         array $mappers = [],
         CacheItemPoolInterface|null $cache = null,
-        bool $enableCacheOnRead = false
+        bool $enableCacheOnRead = false,
     ) {
         $this->setConnectionName($connectionName);
         $this->setConnectionFactory($connectionFactory);
@@ -95,11 +95,11 @@ abstract class AbstractUserMapper
             'user_date_first_access',
             'user_date_last_access',
             'user_date_create',
-            'user_date_update'
+            'user_date_update',
         ]);
 
         $this->setPrimaryKeys([
-            'user_id'
+            'user_id',
         ]);
     }
 

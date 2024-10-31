@@ -9,10 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Application\Controller\Common;
+namespace Application\Controller\Web;
 
-use Application\Controller\Common\Traits\AssetsAwareTrait;
-use Application\Controller\Common\Traits\TwigAwareTrait;
+use Application\Controller\Web\Traits\AssetsAwareTrait;
+use Application\Controller\Web\Traits\TwigAwareTrait;
+use Eureka\Component\Web\Menu\Menu;
 use Eureka\Component\Web\Menu\MenuControllerAwareTrait;
 use Eureka\Component\Web\Meta\MetaControllerAwareTrait;
 use Eureka\Component\Web\Session\SessionAwareTrait;
@@ -32,20 +33,19 @@ abstract class AbstractWebController extends Controller
     use SessionAwareTrait;
     use TwigAwareTrait;
 
-    /**
-     * @param ServerRequestInterface|null $request
-     * @return void
-     */
-    public function preAction(?ServerRequestInterface $request = null): void
+    public function preAction(?ServerRequestInterface $serverRequest = null): void
     {
-        parent::preAction($request);
+        if (empty($serverRequest)) {
+            throw new \UnexpectedValueException('Server request is empty!');
+        }
 
-        $this->setServerRequest($request);
+        parent::preAction($serverRequest);
+
         $this->initializeAssets();
 
         $menu = $this->buildMenu();
 
-        $currentUri = $request->getUri();
+        $currentUri = $serverRequest->getUri();
         $currentUriImage = $currentUri
             ->withPath('')
             ->withFragment('')
@@ -53,10 +53,10 @@ abstract class AbstractWebController extends Controller
         ;
 
         $this->getContext()
-            ->add('currentUser', $request !== null ? $request->getAttribute('currentUser') : null)
+            ->add('currentUser', $serverRequest->getAttribute('currentUser'))
             ->add('menuLeft', $menu['left'])
             ->add('menuRight', $menu['right'])
-            ->add('menuState', $this->getMenuState($request))
+            ->add('menuState', $this->getMenuState($serverRequest))
             ->add('meta', $this->getMeta())
             ->add('cssFiles', $this->getCssFiles())
             ->add('jsFiles', $this->getJsFiles())
@@ -64,14 +64,14 @@ abstract class AbstractWebController extends Controller
             ->add('flashFormErrors', $this->getFormErrors())
             ->add('currentUrl', (string) $currentUri)
             ->add('baseUrlImage', (string) $currentUriImage)
-            ->add('user', $request->getAttribute('user'))
+            ->add('user', $serverRequest->getAttribute('user'))
         ;
 
-        $this->getSession()->clearFlash();
+        $this->getSession()?->clearFlash();
     }
 
     /**
-     * @return array
+     * @return array{left: Menu, right: Menu}
      */
     protected function buildMenu(): array
     {
