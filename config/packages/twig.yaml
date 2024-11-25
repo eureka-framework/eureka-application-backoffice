@@ -1,5 +1,5 @@
 parameters:
-  twig.template.name: 'corona'
+  twig.template.name: 'adminlte'
 
   twig.cache.dir: '%kernel.directory.cache%/%kernel.environment%/twig'
 

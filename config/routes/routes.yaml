@@ -15,13 +15,21 @@ user_login:
     methods:    [ GET ]
 
 #~ Pages
+page_dashboard:
+    path:       /page/dashboard
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: dashboard
+        authenticationRequired: false
+
 page_buttons:
     path:       /page/buttons
     controller: Application\Controller\Web\Page\PageController::index
     methods:    [GET]
     defaults:
         page: buttons
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_dropdowns:
     path:       /page/dropdowns
@@ -29,7 +37,7 @@ page_dropdowns:
     methods:    [GET]
     defaults:
         page: dropdowns
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_typography:
     path:       /page/typography
@@ -37,7 +45,7 @@ page_typography:
     methods:    [GET]
     defaults:
         page: typography
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_form:
     path:       /page/form
@@ -45,7 +53,7 @@ page_form:
     methods:    [GET]
     defaults:
         page: form
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_tables:
     path:       /page/tables
@@ -53,7 +61,7 @@ page_tables:
     methods:    [GET]
     defaults:
         page: tables
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_charts:
     path:       /page/charts
@@ -61,7 +69,7 @@ page_charts:
     methods:    [GET]
     defaults:
         page: charts
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_icons:
     path:       /page/icons
@@ -69,7 +77,7 @@ page_icons:
     methods:    [GET]
     defaults:
         page: icons
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_blank:
     path:       /page/blank
@@ -77,7 +85,7 @@ page_blank:
     methods:    [GET]
     defaults:
         page: blank
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_404:
     path:       /page/404
@@ -85,7 +93,7 @@ page_404:
     methods:    [GET]
     defaults:
         page: 404
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_500:
     path:       /page/500
@@ -93,7 +101,7 @@ page_500:
     methods:    [GET]
     defaults:
         page: 500
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_login:
     path:       /page/login
@@ -101,7 +109,7 @@ page_login:
     methods:    [GET]
     defaults:
         page: login
-        authenticationRequired: true
+        authenticationRequired: false
 
 page_register:
     path:       /page/register
@@ -109,7 +117,7 @@ page_register:
     methods:    [GET]
     defaults:
         page: register
-        authenticationRequired: true
+        authenticationRequired: false
 
 # ======================================================================================================================
 # =                                                 API                                                                =

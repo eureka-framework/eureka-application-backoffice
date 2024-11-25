@@ -58,8 +58,8 @@ trait AssetsAwareTrait
      */
     protected function initializeAssets(): void
     {
-        $entryFile    = $this->rootDirectory . '/web/assets/entrypoints.json';
-        $manifestFile = $this->rootDirectory . '/web/assets/manifest.json';
+        $entryFile    = $this->rootDirectory . '/public/assets/entrypoints.json';
+        $manifestFile = $this->rootDirectory . '/public/assets/manifest.json';
 
         if (!\is_readable($entryFile) || !\is_readable($manifestFile)) {
             throw new \RuntimeException('entrypoints.json or manifest.json file is not readable.');

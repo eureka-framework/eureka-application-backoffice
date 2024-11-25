@@ -33,6 +33,9 @@ abstract class AbstractWebController extends Controller
     use SessionAwareTrait;
     use TwigAwareTrait;
 
+    /**
+     * @throws \JsonException
+     */
     public function preAction(?ServerRequestInterface $serverRequest = null): void
     {
         if (empty($serverRequest)) {
