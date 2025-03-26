@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Application\Service;
 
-use Eureka\Component\Web\Session\Session;
 use Eureka\Kernel\Http\Exception\HttpBadRequestException;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token;
@@ -29,10 +28,7 @@ class JsonWebTokenService
 {
     public const int EXPIRATION_DELAY = 604800; // 7 days
 
-    public function __construct(
-        private readonly Configuration $configuration,
-        private readonly Session $session,
-    ) {}
+    public function __construct(private readonly Configuration $configuration) {}
 
     /**
      * @param int $userId
@@ -86,6 +82,10 @@ class JsonWebTokenService
         if (empty($authString)) {
             $cookie     = $serverRequest->getCookieParams();
             $authString = $cookie['token'] ?? '';
+
+            if (!\is_string($authString)) {
+                $authString = '';
+            }
         }
 
         if (!\str_starts_with($authString, 'JWT ') || \strlen($authString) <= 4) {

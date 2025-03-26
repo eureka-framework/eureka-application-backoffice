@@ -22,7 +22,6 @@ return (new PhpCsFixer\Config())
             __DIR__ . '/src',
             __DIR__ . '/scripts',
             __DIR__ . '/tests',
-            __DIR__ . '/features/bootstrap',
         ])
     )
 ;

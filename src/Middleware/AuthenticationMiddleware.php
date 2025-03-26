@@ -104,7 +104,13 @@ readonly class AuthenticationMiddleware implements MiddlewareInterface
      */
     private function getUser(UnencryptedToken $token): User
     {
-        $userId = (int) $token->claims()->get('uid');
+        $userId = $token->claims()->get('uid');
+
+        if (!\is_numeric($userId)) {
+            throw new \UnexpectedValueException('Token does not contains userId');
+        }
+
+        $userId = (int) $userId;
 
         try {
             $user = $this->userRepository->findById($userId);

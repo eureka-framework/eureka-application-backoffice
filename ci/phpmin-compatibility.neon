@@ -10,7 +10,6 @@ parameters:
     - ./../src
     - ./../scripts
     - ./../tests
-    - ./../features/bootstrap
 
   bootstrapFiles:
     - ./../vendor/autoload.php

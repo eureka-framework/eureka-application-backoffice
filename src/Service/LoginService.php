@@ -93,8 +93,12 @@ class LoginService
     {
         $token = $this->jsonWebTokenService->getTokenFromServerRequest($serverRequest);
 
-        $userId = (int) $token->claims()->get('uid', 0);
-        $user = $this->userRepository->findById($userId);
+        $userId = $token->claims()->get('uid', 0);
+        if (!\is_numeric($userId)) {
+            throw new \UnexpectedValueException('Token does not contain a valid uid!');
+        }
+
+        $user = $this->userRepository->findById((int) $userId);
 
         $user->revokeToken($token);
         $this->userRepository->persist($user);

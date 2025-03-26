@@ -6,3 +6,8 @@ parameters:
 services:
   Psr\Container\ContainerInterface:
     alias: 'service_container'
+    # ...
+
+  Symfony\Component\AssetMapper\Command\ImportMapInstallCommand:
+    tags:
+      - { name: 'console.command', command: 'importmap:install' }
