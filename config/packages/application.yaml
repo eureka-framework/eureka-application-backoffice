@@ -33,7 +33,6 @@ services:
       #- setSession:              [ '@session' ]
       - setMenuConfig:           [ '%menu.config.left%', '%menu.cookie_state_name%', '%menu.config.right%' ]
       - setMetaConfig:           [ '%meta.config%' ]
-      - setRootDirectory:        [ '%kernel.directory.root%' ]
 
   #~ Application Domain
   Application\Domain\:

@@ -25,6 +25,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 class Symfony extends AbstractScript
 {
+    private array $argv = [];
     /**
      * @param Command[] $commands
      */
@@ -34,22 +35,28 @@ class Symfony extends AbstractScript
         $this->setDescription('Symfony bridge command handler');
         $this->setExecutable();
 
+        //~ Inject Symfony command as -c option
+        $script  = \array_shift($_SERVER['argv']);
+        $this->argv = $_SERVER['argv'];
+
+        $command = \array_shift($_SERVER['argv']);
+        $_SERVER['argv'] = [$script, 'symfony', '-c', $command];
+
         $this->initOptions(
             (new Options())
                 ->add(new Option('c', 'command', ' Symfony command name', true, true)),
         );
     }
 
-
     public function run(): void
     {
-        $command = (string) $this->options()->value('command', 'c');
+        $command = $this->options()->value('command', 'c');
 
         if (!isset($this->commands[$command])) {
             throw new \UnexpectedValueException("Unkown symfony command '$command'");
         }
 
-        $input  = new ArgvInput();
+        $input  = new ArgvInput($this->argv);
         $output = new ConsoleOutput();
         $this->commands[$command]->run($input, $output);
     }

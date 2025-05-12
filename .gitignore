@@ -3,14 +3,15 @@ composer.phar
 composer.lock
 /vendor/
 
+#~ npm related
+assets/vendor/*
+
 #~ App secrets
 config/secrets/*
 !config/secrets/.gitkeep
 
 #~ Statics
-node_modules/
 public/assets
-yarn.lock
 
 #~ Application
 var/*
@@ -18,7 +19,6 @@ var/*
 
 #~ CI
 /build/
-.phpunit.result.cache
 
 #~ Misc
 .idea/

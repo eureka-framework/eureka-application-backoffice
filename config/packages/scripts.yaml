@@ -9,4 +9,5 @@ services:
   Application\Script\Symfony:
     arguments:
       $commands:
-        - 'importmap:install': '@Symfony\Component\AssetMapper\Command\ImportMapInstallCommand'
+        'importmap:require': '@Symfony\Component\AssetMapper\Command\ImportMapRequireCommand'
+        'asset-map:compile': '@Symfony\Component\AssetMapper\Command\AssetMapperCompileCommand'

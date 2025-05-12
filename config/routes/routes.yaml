@@ -55,6 +55,14 @@ page_form:
         page: form
         authenticationRequired: false
 
+page_advanced:
+    path:       /page/advanced
+    controller: Application\Controller\Web\Page\PageController::index
+    methods:    [GET]
+    defaults:
+        page: advanced
+        authenticationRequired: false
+
 page_tables:
     path:       /page/tables
     controller: Application\Controller\Web\Page\PageController::index

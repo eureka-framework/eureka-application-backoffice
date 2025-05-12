@@ -28,6 +28,6 @@ class LoginController extends AbstractWebController
      */
     public function index(ServerRequestInterface $serverRequest): ResponseInterface
     {
-        return $this->getResponse($this->render('@app/User/Login.twig'));
+        return $this->getResponse($this->render('@app/user/login.html.twig'));
     }
 }

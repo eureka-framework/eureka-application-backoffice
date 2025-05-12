@@ -11,56 +11,20 @@ declare(strict_types=1);
 
 namespace Application\Service\Twig;
 
-use Application\Exception\TwigHelperException;
 use Symfony\Component\Routing\Router;
 
-/**
- * Class Helper
- *
- * @author Romain Cottard
- */
 class TwigHelper
 {
-    /** @var array<string> $assetsManifest */
-    private array $assetsManifest;
-
     /**
      * TwigHelper constructor.
      *
      * @param Router $router
      * @param string $webAssetsPath
      */
-    public function __construct(private readonly Router $router, string $webAssetsPath)
-    {
-        $this->initializeAssetsManifest($webAssetsPath);
-    }
-
-    /**
-     * @param string $webAssetsPath
-     * @return void
-     */
-    private function initializeAssetsManifest(string $webAssetsPath): void
-    {
-        $manifestFile = $webAssetsPath . '/manifest.json';
-
-        if (!\is_readable($manifestFile)) {
-            throw new TwigHelperException('manifest.json file is not readable.', 1100);
-        }
-
-
-        try {
-            /** @var array<string> $json */
-            $json = \json_decode(
-                (string) \file_get_contents($manifestFile),
-                true,
-                flags: \JSON_THROW_ON_ERROR,
-            );
-
-            $this->assetsManifest = $json;
-        } catch (\JsonException $exception) {
-            throw new TwigHelperException('Unable to decode manifest.json file!', 1101, $exception);
-        }
-    }
+    public function __construct(
+        private readonly Router $router,
+        private readonly string $webAssetsPath,
+    ) {}
 
     /**
      * @return array<string, callable>
@@ -68,11 +32,24 @@ class TwigHelper
     public function getCallbackFunctions(): array
     {
         return [
-            'path'  => [$this, 'path'],
-            'image' => [$this, 'image'],
-            'asset' => [$this, 'asset'],
+            'importmap' => $this->importmap(...),
+            'path'      => $this->path(...),
+            'image'     => $this->image(...),
+            'asset'     => $this->asset(...),
         ];
     }
+
+    public function importmap(string $name): string
+    {
+        $importMapGenerator = new TwigImportMapGenerator($this->webAssetsPath, $name);
+
+        return
+            $importMapGenerator->css() .
+            $importMapGenerator->importmap() .
+            $importMapGenerator->js()
+        ;
+    }
+
 
     /**
      * @param  string $routeName

@@ -23,12 +23,13 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class PageController extends AbstractWebController
 {
-    private const ALLOWED_PAGES = [
+    private const array ALLOWED_PAGES = [
         'dashboard',
         'buttons',
         'dropdowns',
         'typography',
         'form',
+        'advanced',
         'tables',
         'charts',
         'icons',
@@ -52,6 +53,6 @@ class PageController extends AbstractWebController
             throw new HttpNotFoundException('Page not found', 404);
         }
 
-        return $this->getResponse($this->render('@app/Page/' . ucfirst($page) . '.twig'));
+        return $this->getResponse($this->render("@app/page/$page.html.twig"));
     }
 }

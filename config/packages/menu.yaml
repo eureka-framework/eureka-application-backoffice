@@ -1,6 +1,6 @@
 parameters:
 
-  menu.cookie_state_name: 'bo_menu_state'
+  menu.cookie_state_name: 'menu_state'
 
   menu.config.left:
 

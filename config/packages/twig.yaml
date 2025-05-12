@@ -1,14 +1,14 @@
 parameters:
-  twig.template.name: 'adminlte'
+  twig.theme: 'adminlte'
 
   twig.cache.dir: '%kernel.directory.cache%/%kernel.environment%/twig'
 
   twig.paths:
-    app:    '%kernel.directory.root%/templates/%twig.template.name%/app'
-    common: '%kernel.directory.root%/templates/%twig.template.name%/common'
-    layout: '%kernel.directory.root%/templates/%twig.template.name%/layout'
-    macro:  '%kernel.directory.root%/templates/%twig.template.name%/macro'
-    mail:   '%kernel.directory.root%/templates/%twig.template.name%/mail'
+    app:    '%kernel.directory.root%/templates/%twig.theme%/app'
+    common: '%kernel.directory.root%/templates/%twig.theme%/common'
+    layout: '%kernel.directory.root%/templates/%twig.theme%/layout'
+    macro:  '%kernel.directory.root%/templates/%twig.theme%/macro'
+    mail:   '%kernel.directory.root%/templates/%twig.theme%/mail'
 
 services:
 

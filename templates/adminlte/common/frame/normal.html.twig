@@ -1,0 +1,18 @@
+{% extends '@layout/main.html.twig' %}
+
+{% block page %}
+
+
+<div class="wrapper">
+
+    {% include '@common/header/header.html.twig' %}
+
+    {% include '@common/side/menu.html.twig' %}
+
+    <div class="content-wrapper">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% include '@common/footer/footer.html.twig'%}
+</div>
+{% endblock %}

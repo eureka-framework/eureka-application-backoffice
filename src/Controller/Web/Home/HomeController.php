@@ -26,6 +26,6 @@ class HomeController extends AbstractWebController
      */
     public function index(): ResponseInterface
     {
-        return $this->getResponse($this->render('@app/Home/Home.twig'));
+        return $this->getResponse($this->render('@app/home/home.html.twig'));
     }
 }
