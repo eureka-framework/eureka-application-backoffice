@@ -79,9 +79,9 @@ class JsonWebTokenService
     {
         $authString = $serverRequest->getHeaderLine('Authorization');
 
-        if (empty($authString)) {
+        if ($authString === '') {
             $cookie     = $serverRequest->getCookieParams();
-            $authString = $cookie['token'] ?? '';
+            $authString = $cookie['authorization'] ?? '';
 
             if (!\is_string($authString)) {
                 $authString = '';

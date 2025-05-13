@@ -3,15 +3,16 @@
 {% block page %}
 
 
-<div class="wrapper">
+<div class="app-wrapper">
 
     {% include '@common/header/header.html.twig' %}
 
     {% include '@common/side/menu.html.twig' %}
 
-    <div class="content-wrapper">
-        {% block content %}{% endblock %}
-    </div>
+    <main class="app-main">
+
+    {% block content %}{% endblock %}
+    </main>
 
     {% include '@common/footer/footer.html.twig'%}
 </div>

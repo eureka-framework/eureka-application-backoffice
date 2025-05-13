@@ -16,28 +16,16 @@ use Eureka\Kernel\Http\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * Class PageController
- *
- * @author Romain Cottard
- */
 class PageController extends AbstractWebController
 {
     private const array ALLOWED_PAGES = [
-        'dashboard',
-        'buttons',
-        'dropdowns',
-        'typography',
-        'form',
-        'advanced',
-        'tables',
-        'charts',
-        'icons',
-        'blank',
-        '404',
-        '500',
-        'login',
-        'register',
+        'ui-general',
+        'ui-timeline',
+        'widgets-small-box',
+        'widgets-info-box',
+        'widgets-card',
+        'forms-general',
+        'tables-simple',
     ];
 
     /**

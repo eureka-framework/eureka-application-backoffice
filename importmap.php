@@ -17,33 +17,31 @@ return [
         'entrypoint' => true,
     ],
     'jquery' => [
-        'version' => '3.6.0',
+        'version' => '4.0.0',
     ],
     'select2' => [
-        'version' => '4.0.13',
+        'version' => '4.1.0-rc.0',
     ],
     'select2/dist/css/select2.min.css' => [
-        'version' => '4.0.13',
+        'version' => '4.1.0-rc.0',
         'type' => 'css',
-    ],
-    'bootstrap' => [
-        'version' => '4.6.2',
-    ],
-    'popper.js' => [
-        'version' => '1.16.1',
     ],
     'admin-lte' => [
-        'version' => '3.2.0',
+        'version' => '4.0.0-rc7',
     ],
     'admin-lte/dist/css/adminlte.min.css' => [
-        'version' => '3.2.0',
+        'version' => '4.0.0-rc7',
         'type' => 'css',
-    ],
-    '@fortawesome/fontawesome-free' => [
-        'version' => '5.15.4',
     ],
     '@fortawesome/fontawesome-free/css/fontawesome.min.css' => [
-        'version' => '5.15.4',
+        'version' => '7.2.0',
         'type' => 'css',
+    ],
+    'bootstrap-icons/font/bootstrap-icons.min.css' => [
+        'version' => '1.13.1',
+        'type' => 'css',
+    ],
+    'bootstrap/dist/js/bootstrap.bundle.min.js' => [
+        'version' => '5.3.8',
     ],
 ];

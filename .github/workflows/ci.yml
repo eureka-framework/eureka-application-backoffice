@@ -7,43 +7,59 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  ci:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: [ '8.4', '8.5' ]
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
+      - uses: actions/checkout@v4
         with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          fetch-depth: 0
+
+      #~ PHP Setup
+      - name: Setup PHP ${{ matrix.php-versions }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+
+      #~ Composer Cache
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-php-
+            ${{ runner.os }}-composer-
+
+      #~ Composer install
+      - name: Validate composer.json
+        run: composer validate
 
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: make install
 
-      - name: Tests Statics (Code Style check)
-        run: make phpcs
+      #~ CI part
+      - name: Dependencies
+        run: make php/deps
 
-#      - name: Units Tests
-#        run: |
-#          make tests
-#          sed -i 's+/home/runner/work/eureka-application-backoffice/eureka-application-backoffice+/github/workspace+g' build/reports/phpunit/clover.xml
+      - name: Check Code Style
+        run: make php/check
 
-      - name: Behat Tests
+      - name: Units Tests
+        run: make php/tests
+
+      - name: Fix unit tests report path
         run: |
-          make behat
+          sed -i 's+'$GITHUB_WORKSPACE'+/github/workspace+g' build/reports/phpunit/clover.xml
+          sed -i 's+'$GITHUB_WORKSPACE'+/github/workspace+g' build/reports/phpunit/unit.xml
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: PHP Static Analyze
+        run: make php/analyze

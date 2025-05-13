@@ -12,28 +12,20 @@ declare(strict_types=1);
 namespace Application\Service\Twig;
 
 use Application\Exception\TwigHelperException;
-use Symfony\Component\Routing\Router;
 
-/**
- * Class Helper
- *
- * @author Romain Cottard
- */
 class TwigImportMapGenerator
 {
-    /** @var list<string> $entrypoints */
-    private array $entrypoints = [];
-
     /** @var array{js: array<string, string>, css: array<string, string>} $imports */
     private array $imports;
 
     public function __construct(
+        private readonly ManifestLoader $manifestLoader,
         string $webAssetsPath,
         private readonly string $name,
     ) {
         $entrypoints          = $this->loadEntrypoints($webAssetsPath, $name);
         $this->imports['js']  = $this->loadImportMap($webAssetsPath, $entrypoints);
-        $this->imports['css'] = $this->loadManifest($webAssetsPath);
+        $this->imports['css'] = $this->manifestLoader->load($webAssetsPath, ['.css']);
     }
 
     public function importmap(): string
@@ -125,37 +117,5 @@ class TwigImportMapGenerator
         }
 
         return $imports;
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function loadManifest(string $webAssetsPath): array
-    {
-        $manifestFile = "$webAssetsPath/manifest.json";
-
-        if (!\is_readable($manifestFile)) {
-            throw new TwigHelperException("manifest.json file is not readable.", 1104);
-        }
-
-        try {
-            /** @var array<string, string> $manifest */
-            $manifest = \json_decode(
-                (string) \file_get_contents($manifestFile),
-                true,
-                flags: \JSON_THROW_ON_ERROR,
-            );
-        } catch (\JsonException $exception) {
-            throw new TwigHelperException("Unable to decode entrypoint.$name.json file!", 1105, $exception);
-        }
-
-        $css = [];
-        foreach ($manifest as $name => $path) {
-            if (\str_ends_with($name, '.css')) {
-                $css[] = $path;
-            }
-        }
-
-        return $css;
     }
 }

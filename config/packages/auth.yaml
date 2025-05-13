@@ -1,5 +1,5 @@
 parameters:
-  app.token.secret.key:            'default_app_token_secret_key'
+  app.token.secret.key:            'default_app_token_secret_key_long'
   app.token.secret.reset_password: 'default_app_token_secret_reset_password'
 
 services:

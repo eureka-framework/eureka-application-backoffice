@@ -15,16 +15,16 @@ use Symfony\Component\Routing\Router;
 
 class TwigHelper
 {
-    /**
-     * TwigHelper constructor.
-     *
-     * @param Router $router
-     * @param string $webAssetsPath
-     */
+    /** @var string[]  */
+    private array $assetsManifest;
+
     public function __construct(
         private readonly Router $router,
+        private readonly ManifestLoader $manifestLoader,
         private readonly string $webAssetsPath,
-    ) {}
+    ) {
+        $this->assetsManifest = $this->manifestLoader->load($webAssetsPath);
+    }
 
     /**
      * @return array<string, callable>
@@ -41,58 +41,46 @@ class TwigHelper
 
     public function importmap(string $name): string
     {
-        $importMapGenerator = new TwigImportMapGenerator($this->webAssetsPath, $name);
+        $importMapGenerator = new TwigImportMapGenerator($this->manifestLoader, $this->webAssetsPath, $name);
 
         return
-            $importMapGenerator->css() .
-            $importMapGenerator->importmap() .
-            $importMapGenerator->js()
+            $importMapGenerator->css()
+            . $importMapGenerator->importmap()
+            . $importMapGenerator->js()
         ;
     }
 
 
     /**
-     * @param  string $routeName
      * @param  array<string, string|int|float> $params
-     * @return string
      */
     public function path(string $routeName, array $params = []): string
     {
         return $this->router->generate($routeName, $params);
     }
 
-    /**
-     * @param string $filename
-     * @param string $baseUrl
-     * @return string
-     */
-    public function image(string $filename, string $baseUrl = '/assets/images'): string
+    public function image(string $filename): string
+    {
+        if (\preg_match('`([a-z]+)://(.+)`', $filename, $matches) > 0) {
+            return match ($matches[1]) {
+                'asset'  => $this->getRealAssetPath($matches[2], '/img/'),
+                'upload' => '/upload/' . $matches[2],
+                default  => $filename,
+            };
+        }
+
+        return $this->getRealAssetPath($filename, '');
+    }
+
+    public function asset(string $filename, string $baseUrl = '/assets/'): string
     {
         return $this->getRealAssetPath($filename, $baseUrl);
     }
 
-    /**
-     * @param string $filename
-     * @param string $baseUrl
-     * @return string
-     */
-    public function asset(string $filename, string $baseUrl = '/assets'): string
-    {
-        return $this->getRealAssetPath($filename, $baseUrl);
-    }
-
-    /**
-     * @param string $filename
-     * @param string $baseUrl
-     * @return string
-     */
     private function getRealAssetPath(string $filename, string $baseUrl): string
     {
         $filePath = \trim($baseUrl, ' /') . '/' . \ltrim($filename, '/');
-        if (!isset($this->assetsManifest[$filePath])) {
-            return '';
-        }
 
-        return $this->assetsManifest[$filePath];
+        return $this->assetsManifest[$filePath] ?? '';
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="{{ meta.charset }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +18,8 @@
 
     {{ importmap('app')|raw }}
 </head>
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {{ menuState == 'closed' ? 'sidebar-collapse' : '' }}">
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
 
 {% block page %}{% endblock %}
 

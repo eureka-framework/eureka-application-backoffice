@@ -37,7 +37,7 @@ abstract class AbstractWebController extends Controller
      */
     public function preAction(?ServerRequestInterface $serverRequest = null): void
     {
-        if (empty($serverRequest)) {
+        if ($serverRequest === null) {
             throw new \UnexpectedValueException('Server request is empty!');
         }
 

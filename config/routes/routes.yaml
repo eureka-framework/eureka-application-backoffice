@@ -3,170 +3,43 @@
 # =                                                 WEB                                                                =
 # ======================================================================================================================
 home:
-    path:       /
-    controller: Application\Controller\Web\Home\HomeController::index
-    methods:    [GET]
-    defaults:
-        authenticationRequired: true
+  path: /
+  controller: Application\Controller\Web\Home\HomeController::index
+  methods: [ GET ]
+  defaults:
+    authenticationRequired: true
 
+# ======================================================================================================================
+# =                                               DEMO PAGES                                                           =
+# ======================================================================================================================
+web_page:
+  path: /page/{page}
+  controller: Application\Controller\Web\Page\PageController::index
+  methods: [ GET ]
+  requirements:
+    page: '[a-z-]+'
+  defaults:
+    authenticationRequired: true
+
+# ======================================================================================================================
+# =                                                LOGIN                                                               =
+# ======================================================================================================================
 user_login:
-    path:       /user/login
-    controller: Application\Controller\Web\User\LoginController::index
-    methods:    [ GET ]
+  path: /user/login
+  controller: Application\Controller\Web\User\LoginController::view
+  methods: [ GET ]
 
-#~ Pages
-page_dashboard:
-    path:       /page/dashboard
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: dashboard
-        authenticationRequired: false
+user_signin:
+  path: /user/signin
+  controller: Application\Controller\Web\User\LoginController::signIn
+  methods: [ POST ]
 
-page_buttons:
-    path:       /page/buttons
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: buttons
-        authenticationRequired: false
-
-page_dropdowns:
-    path:       /page/dropdowns
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: dropdowns
-        authenticationRequired: false
-
-page_typography:
-    path:       /page/typography
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: typography
-        authenticationRequired: false
-
-page_form:
-    path:       /page/form
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: form
-        authenticationRequired: false
-
-page_advanced:
-    path:       /page/advanced
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: advanced
-        authenticationRequired: false
-
-page_tables:
-    path:       /page/tables
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: tables
-        authenticationRequired: false
-
-page_charts:
-    path:       /page/charts
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: charts
-        authenticationRequired: false
-
-page_icons:
-    path:       /page/icons
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: icons
-        authenticationRequired: false
-
-page_blank:
-    path:       /page/blank
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: blank
-        authenticationRequired: false
-
-page_404:
-    path:       /page/404
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: 404
-        authenticationRequired: false
-
-page_500:
-    path:       /page/500
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: 500
-        authenticationRequired: false
-
-page_login:
-    path:       /page/login
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: login
-        authenticationRequired: false
-
-page_register:
-    path:       /page/register
-    controller: Application\Controller\Web\Page\PageController::index
-    methods:    [GET]
-    defaults:
-        page: register
-        authenticationRequired: false
 
 # ======================================================================================================================
 # =                                                 API                                                                =
 # ======================================================================================================================
-api_home:
-    path:       /api/
-    controller: Application\Controller\Api\Home\HomeController::index
-    methods:    [GET]
-
-api_ping:
-    path:       /api/ping
-    controller: Application\Controller\Api\Home\HomeController::ping
-    methods:    [GET]
-
-
-# ===== AUTHENTICATION =====
-authentication_token_get:  # Rate Limit: 5 requests / 10 seconds
-    path:       /api/auth/token/get
-    controller: Application\Controller\Api\Authentication\TokenController::get
-    methods:    [POST]
-
-authentication_token_verify: # Rate limit: 100 requests / min
-    path:       /api/auth/token/verify
-    controller: Application\Controller\Api\Authentication\TokenController::verify
-    methods:    [POST]
-
-authentication_token_revoke:
-    path:       /api/auth/token/revoke
-    controller: Application\Controller\Api\Authentication\TokenController::revoke
-    methods:    [POST]
-    defaults:
-        authenticationRequired: true
-
-
-# ===== HEALTH =====
-liveness: # Rate limit: 100 requests / min
-    path:       /api/liveness
-    controller: Application\Controller\Api\Health\HealthController::liveness
-    methods:    [GET]
-
-readiness: # Rate limit: 100 requests / min
-    path:       /api/readiness
-    controller: Application\Controller\Api\Health\HealthController::readiness
-    methods:    [GET]
+#api_home:
+#  path: /api/
+#  controller: Application\Controller\Api\Home\HomeController::index
+#  methods: [ GET ]
+#

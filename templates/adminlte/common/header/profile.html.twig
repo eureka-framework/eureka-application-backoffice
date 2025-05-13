@@ -1,37 +1,23 @@
 
-<li class="nav-item dropdown">
-    <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
-        <div class="navbar-profile">
-            <img class="img-xs rounded-circle" src="{{ image('face15.jpg') }}" alt="">
-            <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ user.getFirstName() }}</p>
-            <i class="mdi mdi-menu-down d-none d-sm-block"></i>
-        </div>
+<li class="nav-item dropdown user-menu">
+    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+        <img src="{{ image('asset://avatar-default.svg') }}" class="user-image rounded-circle shadow" alt="User Image" />
+        <span class="d-none d-md-inline">{{ user.getFullName()|default('User #1') }}</span>
     </a>
-    <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
-        <h6 class="p-3 mb-0">Profile</h6>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item preview-item">
-            <div class="preview-thumbnail">
-                <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-settings text-success"></i>
-                </div>
-            </div>
-            <div class="preview-item-content">
-                <p class="preview-subject mb-1">Settings</p>
-            </div>
-        </a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item preview-item">
-            <div class="preview-thumbnail">
-                <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-logout text-danger"></i>
-                </div>
-            </div>
-            <div class="preview-item-content">
-                <p class="preview-subject mb-1">Log out</p>
-            </div>
-        </a>
-        <div class="dropdown-divider"></div>
-        <p class="p-3 mb-0 text-center">Advanced settings</p>
-    </div>
+    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+        <li class="user-header text-bg-primary">
+            <img src="{{ image('asset://avatar-default.svg') }}" class="rounded-circle shadow" alt="User Image" />
+            <p>
+                {{ user.getFullName()|default('User #1') }}
+                <small>Member since {{ user.getDateCreate()|format('Y-m-d') }}</small>
+            </p>
+        </li>
+        <li class="user-body">
+           <!-- nothing for now-->
+        </li>
+        <li class="user-footer">
+            <a href="#" class="btn btn-outline-secondary">Profile</a>
+            <a href="#" class="btn btn-outline-danger float-end">Sign out</a>
+        </li>
+    </ul>
 </li>

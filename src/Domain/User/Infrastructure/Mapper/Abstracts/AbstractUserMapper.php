@@ -46,10 +46,10 @@ abstract class AbstractUserMapper
     public function __construct(
         string $connectionName,
         ConnectionFactory $connectionFactory,
-        ValidatorFactoryInterface|null $validatorFactory = null,
-        ValidatorEntityFactory|null $validatorEntityFactory = null,
+        ?ValidatorFactoryInterface $validatorFactory = null,
+        ?ValidatorEntityFactory $validatorEntityFactory = null,
         array $mappers = [],
-        CacheItemPoolInterface|null $cache = null,
+        ?CacheItemPoolInterface $cache = null,
         bool $enableCacheOnRead = false,
     ) {
         $this->setConnectionName($connectionName);

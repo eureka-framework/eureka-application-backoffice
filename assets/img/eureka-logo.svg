@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="#000000"
+   stroke-width="2"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+   class="feather feather-hexagon"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="eureka-logo.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient3"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#ff00ed;stop-opacity:1;"
+         offset="0"
+         id="stop3" />
+      <stop
+         style="stop-color:#ff015c;stop-opacity:1;"
+         offset="1"
+         id="stop4" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#fe00d2;stop-opacity:1;"
+         offset="0"
+         id="stop1" />
+      <stop
+         style="stop-color:#f509a3;stop-opacity:1;"
+         offset="1"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="linearGradient2"
+       x1="12"
+       y1="21.639999"
+       x2="12"
+       y2="1.6399996"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-0.34265197)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3"
+       id="linearGradient4"
+       x1="12.002171"
+       y1="2.797348"
+       x2="12.002171"
+       y2="22.797348"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.51183555"
+     inkscape:cx="639.85395"
+     inkscape:cy="529.46693"
+     inkscape:window-width="2910"
+     inkscape:window-height="1360"
+     inkscape:window-x="1097"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
+  <path
+     d="m 21,15.297348 v -8 a 2,2 0 0 0 -1,-1.73 l -7,-4 a 2,2 0 0 0 -2,0 l -7,4 a 2,2 0 0 0 -1,1.73 v 8 a 2,2 0 0 0 1,1.73 l 7,4 a 2,2 0 0 0 2,0 l 7,-4 a 2,2 0 0 0 1,-1.73 z"
+     id="path1"
+     style="stroke:url(#linearGradient2)" />
+  <path
+     d="m 21.00217,16.797348 v -8 a 2,2 0 0 0 -1,-1.73 l -7,-4 a 2,2 0 0 0 -2,0 l -7,4 a 2,2 0 0 0 -1,1.73 v 8 a 2,2 0 0 0 1,1.73 l 7,4 a 2,2 0 0 0 2,0 l 7,-4 a 2,2 0 0 0 1,-1.73 z"
+     id="path1-8"
+     style="stroke:url(#linearGradient4)" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3039px;line-height:1.25;font-family:Gabriola;-inkscape-font-specification:Gabriola;fill:#ff00dc;fill-opacity:1;stroke:none;stroke-width:0.0306233;stroke-dasharray:none"
+     x="8.8942766"
+     y="16.166924"
+     id="text4"
+     transform="scale(0.99557605,1.0044436)"><tspan
+       sodipodi:role="line"
+       id="tspan4"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Gabriola;-inkscape-font-specification:Gabriola;fill:#ff00dc;fill-opacity:1;stroke:none;stroke-width:0.0306233;stroke-dasharray:none"
+       x="8.8942766"
+       y="16.166924">E</tspan></text>
+</svg>

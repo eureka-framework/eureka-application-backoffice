@@ -6,12 +6,12 @@ parameters:
 
     app:
       name_short: ''
-      name_full: 'Eureka Backoffice'
+      name_full:  'Eureka BO'
+      version:    '%app.version%'
 
     description: 'This application is an template backoffice application based on Eureka Framework component'
-    keywords: 'eureka, backoffice, template, component, php, framework'
-    author: 'Romain Cottard'
-    version: '%app.version%'
+    keywords:    'eureka, backoffice, template, component, php, framework'
+    author:      'Romain Cottard'
 
     copyright:
       year: 'now'

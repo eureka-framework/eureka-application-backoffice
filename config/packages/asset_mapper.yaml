@@ -34,6 +34,7 @@ services:
   Symfony\Component\AssetMapper\Factory\MappedAssetFactory: ~
   Symfony\Component\AssetMapper\Command\ImportMapRequireCommand: ~
   Symfony\Component\AssetMapper\Command\AssetMapperCompileCommand: ~
+  Symfony\Component\AssetMapper\Command\ImportMapInstallCommand: ~
   Symfony\Component\AssetMapper\Compiler\CssAssetUrlCompiler: ~
   Symfony\Component\AssetMapper\Compiler\JavaScriptImportPathCompiler: ~
   Symfony\Component\AssetMapper\Compiler\SourceMappingUrlsCompiler: ~

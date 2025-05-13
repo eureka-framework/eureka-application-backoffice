@@ -1,9 +1,34 @@
-{% extends '@common/frame/full.html.twig' %}
+{% extends '@common/frame/normal.html.twig' %}
+
+{% block page_title %}{{ meta.title }} | Dashboard{% endblock %}
+{% block og_title %}{{ meta.title }} | Dashboard{% endblock %}
 
 {% block content %}
 
-    <div class="content-wrapper d-flex align-items-center text-center error-page bg-info">
-        <div class="row flex-grow">
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Error</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Error</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">500</li>
+                    </ol>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content Header-->
+    <!--begin::App Content-->
+    <div class="app-content align-items-center text-center error-page bg-danger h-100">
+        <div class="row pt-5 pb-5">
             <div class="col-lg-7 mx-auto text-white">
                 <div class="row align-items-center d-flex flex-row">
                     <div class="col-lg-6 text-lg-right pr-lg-4">
@@ -21,16 +46,13 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-12 mt-xl-2">
-                        <p class="text-white font-weight-medium text-center">Copyright &copy; 2020 All rights reserved.</p>
+                        <pre>
+                        {{ exception.getTraceAsString() }}
+                        </pre>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {% if isDebug %}
-    <pre>
-        {{ exception.getTraceAsString() }}
-    </pre>
-    {% endif %}
 {% endblock %}

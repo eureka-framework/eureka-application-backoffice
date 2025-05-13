@@ -22,10 +22,15 @@ require_once __DIR__ . '/../vendor/autoload.php';
 try {
 
     $root   = (string) \realpath(__DIR__ . '/..');
-    $env    = \getenv('EKA_ENV') ?: 'dev';
-    $debug  = (bool) (\getenv('EKA_DEBUG') ?: ($env === 'dev'));
-    $kernel = new Kernel($root, $env, $debug);
+    $env    = (string) \getenv('EKA_ENV');
+    $debug  = (bool) \getenv('EKA_DEBUG');
 
+    if ($env === '') {
+        $env   = 'dev';
+        $debug = true;
+    }
+
+    $kernel  = new Kernel($root, $env, $debug);
     $console = new Application(SystemClock::fromUTC(), $argv, container: $kernel->getContainer());
     $console
         ->setBaseNamespaces([

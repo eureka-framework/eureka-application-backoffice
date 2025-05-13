@@ -6,66 +6,53 @@ parameters:
 
     home:
       label: 'Dashboard'
-      icon: 'mdi mdi-speedometer'
+      icon: 'bi bi-speedometer'
       route: 'home'
       children: ~
 
-    page_basic_ui:
-      label: 'Basic UI Elements'
-      icon: 'mdi mdi-laptop'
-      route: 'http-basic-ui'
-      children:
-        - label: 'Buttons'
-          route: 'page_buttons'
-        - label: 'Dropdowns'
-          route: 'page_dropdowns'
-        - label: 'Typography'
-          route: 'page_typography'
-
-    page_form_elements:
-      label: 'Form Elements'
-      icon: 'mdi mdi-playlist-play'
-      route: 'page_form'
-      children: ~
-
-    page_basic_table:
-      label: 'Tables'
-      icon: 'mdi mdi-table-large'
-      route: 'page_tables'
-      children: ~
-
-    page_chartjs:
-      label: 'Charts'
-      icon: 'mdi mdi-chart-bar'
-      route: 'page_charts'
-      children: ~
-
-    page_icons:
-      label: 'Icons'
-      icon: 'mdi mdi-contacts'
-      route: 'page_icons'
-      children: ~
-
-    page_user_pages:
-      label: 'User Pages'
-      icon: 'mdi mdi-security'
-      route: 'http-user-pages'
-      children:
-        - label: 'Blank Page'
-          route: 'page_blank'
-        - label: '404'
-          route: 'page_404'
-        - label: '500'
-          route: 'page_500'
-        - label: 'Login'
-          route: 'page_login'
-        - label: 'Register'
-          route: 'page_register'
-
-    page_documentation:
-      label: 'Documentation'
-      icon: 'mdi mdi-file-document-box'
+    menu_ui:
+      label: 'UI Elements'
+      icon: 'bi bi-tree-fill'
       route: '#'
-      children: ~
+      children:
+        - label: 'General'
+          route: 'web_page'
+          route_params: { page: 'ui-general' }
+        - label: 'Timeline'
+          route: 'web_page'
+          route_params: { page: 'ui-timeline' }
+
+    menu_widgets:
+      label: 'Widgets'
+      icon: 'bi bi-box-seam-fill'
+      route: '#'
+      children:
+        - label: 'Small box'
+          route: 'web_page'
+          route_params: { page: 'widgets-small-box' }
+        - label: 'Info box'
+          route: 'web_page'
+          route_params: { page: 'widgets-info-box' }
+        - label: 'Card'
+          route: 'web_page'
+          route_params: { page: 'widgets-card' }
+
+    menu_forms:
+      label: 'Forms'
+      icon: 'bi bi-pencil-square'
+      route: '#'
+      children:
+        - label: 'Generals Elements'
+          route: 'web_page'
+          route_params: { page: 'forms-general' }
+
+    menu_tables:
+      label: 'Tables'
+      icon: 'bi bi-table'
+      route: '#'
+      children:
+        - label: 'Simple Tables'
+          route: 'web_page'
+          route_params: { page: 'tables-simple' }
 
   menu.config.right: [ ]
