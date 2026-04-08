@@ -45,7 +45,7 @@ build/reports/phpstan:
 	@mkdir -p build/reports/phpstan
 
 #~ main commands
-deps: composer.json # jenkins + manual
+php/deps: composer.json # jenkins + manual
 	$(call header,Checking Dependencies)
 	@XDEBUG_MODE=off ./vendor/bin/composer-dependency-analyser --config=./ci/composer-dependency-analyser.php # for shadow & unused required dependencies
 
@@ -85,7 +85,7 @@ clean: # manual
 	$(call header,Cleaning previous build)
 	@if [ "$(shell ls -A ./build)" ]; then rm -rf ./build/*; fi; echo " done"
 
-ci: clean validate deps php/cs php/tests php/integration php/min-compatibility php/max-compatibility php/analyze
+ci: clean validate php/deps php/cs php/tests php/integration php/min-compatibility php/max-compatibility php/analyze
 
 ###########################################################################################################
 # ASSETS
