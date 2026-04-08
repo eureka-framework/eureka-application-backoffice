@@ -27,7 +27,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 abstract class AbstractWebController extends Controller
 {
-    use AssetsAwareTrait;
     use MenuControllerAwareTrait;
     use MetaControllerAwareTrait;
     use SessionAwareTrait;
@@ -38,13 +37,11 @@ abstract class AbstractWebController extends Controller
      */
     public function preAction(?ServerRequestInterface $serverRequest = null): void
     {
-        if (empty($serverRequest)) {
+        if ($serverRequest === null) {
             throw new \UnexpectedValueException('Server request is empty!');
         }
 
         parent::preAction($serverRequest);
-
-        $this->initializeAssets();
 
         $menu = $this->buildMenu();
 
@@ -61,8 +58,6 @@ abstract class AbstractWebController extends Controller
             ->add('menuRight', $menu['right'])
             ->add('menuState', $this->getMenuState($serverRequest))
             ->add('meta', $this->getMeta())
-            ->add('cssFiles', $this->getCssFiles())
-            ->add('jsFiles', $this->getJsFiles())
             ->add('flashNotifications', $this->getAllFlashNotification())
             ->add('flashFormErrors', $this->getFormErrors())
             ->add('currentUrl', (string) $currentUri)

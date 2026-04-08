@@ -4,18 +4,21 @@ use ShipMonk\ComposerDependencyAnalyser\Config\Configuration;
 
 $config = new Configuration();
 
+/**
+ * @return string[]
+ */
 function getConfigFiles(): array
 {
     $files = [];
     $paths = [__DIR__ . '/../config/*'];
 
     while ($paths !== []) {
-        $path = array_shift($paths);
-        foreach ((array) glob($path) as $filePathname) {
-            if (is_dir($filePathname)) {
+        $path = \array_shift($paths);
+        foreach ((array) \glob($path) as $filePathname) {
+            if (\is_dir((string) $filePathname)) {
                 $paths[] = $filePathname . '/*';
-            } elseif (str_ends_with($filePathname, '.yaml')) {
-                $files[] = $filePathname;
+            } elseif (\str_ends_with((string) $filePathname, '.yaml')) {
+                $files[] = (string) $filePathname;
             }
         }
     }
@@ -36,9 +39,9 @@ foreach (getConfigFiles() as $file) {
 
 return $config
     ->addPathToScan(__DIR__ . '/../bin/console', isDev: false)
+    ->addPathToScan(__DIR__ . '/../bin/symfony', isDev: false)
     ->addPathToScan(__DIR__ . '/../src', isDev: false)
     ->addPathToScan(__DIR__ . '/../scripts', isDev: false)
     ->addPathToScan(__DIR__ . '/../tests', isDev: true)
-    ->addPathToScan(__DIR__ . '/../features/bootstrap', isDev: true)
     ->addForceUsedSymbols($classes)
 ;

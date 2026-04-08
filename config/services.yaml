@@ -6,3 +6,4 @@ parameters:
 services:
   Psr\Container\ContainerInterface:
     alias: 'service_container'
+    # ...

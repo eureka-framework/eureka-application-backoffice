@@ -27,12 +27,9 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 class ErrorController extends AbstractWebController implements ErrorControllerInterface
 {
     /**
-     * @param ServerRequestInterface $serverRequest
-     * @param \Exception $exception
-     * @return ResponseInterface
      * @throws \Throwable
      */
-    public function error(ServerRequestInterface $serverRequest, \Exception $exception): ResponseInterface
+    public function error(ServerRequestInterface $serverRequest, \Throwable $exception): ResponseInterface
     {
         //~ Handle authentication errors & redirect to user login page
         if ($exception->getCode() >= 1050 && $exception->getCode() <= 1054 || $exception->getCode() >= 1060) {
@@ -52,13 +49,13 @@ class ErrorController extends AbstractWebController implements ErrorControllerIn
             default => 500,
         };
 
-        $template = $httpCode < 500 ? 'Error4XX.twig' : 'Error5XX.twig';
+        $template = $httpCode < 500 ? 'error_4XX.html.twig' : 'error_5XX.html.twig';
 
         $this->getContext()
             ->add('httpCode', $httpCode)
             ->add('exception', $exception)
         ;
 
-        return $this->getResponse($this->render('@common/Error/' . $template), $httpCode);
+        return $this->getResponse($this->render('@app/error/' . $template), $httpCode);
     }
 }

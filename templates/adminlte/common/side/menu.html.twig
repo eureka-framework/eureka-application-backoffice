@@ -1,0 +1,46 @@
+
+<!--begin::Sidebar-->
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <!--begin::Sidebar Brand-->
+    <div class="sidebar-brand">
+        <!--begin::Brand Link-->
+        <a href="{{ path('home') }}" class="brand-link">
+            <img src="{{ image('asset://eureka-logo.svg') }}" alt="Eureka Logo" class="brand-image opacity-75 shadow" />
+            <span class="brand-text fw-light">{{ meta.app.name_full }}</span>
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation">
+            {% for menu in menuLeft %}
+                {% if menu.hasSubmenu() %}
+                    <li class="nav-item {{ menu.isActive() ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ menu.isActive() ? 'active' : '' }}">
+                            <i class="nav-icon {{ menu.getIcon()|default('bi bi-circle') }}"></i>
+                            <p>{{ menu.getName() }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            {% for submenu in menu.getSubmenu() %}
+                            <li class="nav-item">
+                                <a href="{{ submenu.getUri() }}" class="nav-link {{ submenu.isActive() ? 'active' : '' }}">
+                                    <i class="nav-icon {{ submenu.getIcon()|default('bi bi-circle') }}"></i>
+                                    <p>{{ submenu.getName() }}</p>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% else %}
+                    <a href="{{ menu.getUri() }}" class="nav-link {{ menu.isActive() ? 'active' : '' }}">
+                        <i class="nav-icon {{ menu.getIcon()|default('bi bi-circle') }}"></i>
+                        <p>{{ menu.getName() }}</p>
+                    </a>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </nav>
+    </div>
+    <!--end::Sidebar Wrapper-->
+</aside>
+<!--end::Sidebar-->

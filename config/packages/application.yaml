@@ -1,7 +1,7 @@
 parameters:
-  app.cookie.domain:   '.eureka.fr'
+  app.cookie.domain:   'localhost'
   app.cookie.path:     '/'
-  app.cookie.samesite: 'Lax'  # None, Lax ou Strict
+  app.cookie.samesite: 'Strict'  # None, Lax ou Strict
   app.cookie.httponly: true   # of false if http is used
   app.cookie.secure:   false  # set to true if app use https
 
@@ -18,16 +18,12 @@ services:
     resource: '../../src/*'
     exclude:  '../../src/{Controller,Middleware,Domain}'
 
-  Application\Script\:
-    resource: '../../scripts/*'
-    public: true
-
   #~ Application controllers
   Application\Controller\Web\:
     resource: '../../src/Controller/Web'
     public: true # services called in ControllerMiddleware
     calls:
-      - setTwig:                 [ '@twig' ] ]
+      - setTwig:                 [ '@twig' ]
       - setRouter:               [ '@router' ]
       - setResponseFactory:      [ '@response_factory' ]
       - setRequestFactory:       [ '@request_factory' ]
@@ -37,7 +33,6 @@ services:
       #- setSession:              [ '@session' ]
       - setMenuConfig:           [ '%menu.config.left%', '%menu.cookie_state_name%', '%menu.config.right%' ]
       - setMetaConfig:           [ '%meta.config%' ]
-      - setRootDirectory:        [ '%kernel.directory.root%' ]
 
   #~ Application Domain
   Application\Domain\:

@@ -16,27 +16,16 @@ use Eureka\Kernel\Http\Exception\HttpNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * Class PageController
- *
- * @author Romain Cottard
- */
 class PageController extends AbstractWebController
 {
-    private const ALLOWED_PAGES = [
-        'dashboard',
-        'buttons',
-        'dropdowns',
-        'typography',
-        'form',
-        'tables',
-        'charts',
-        'icons',
-        'blank',
-        '404',
-        '500',
-        'login',
-        'register',
+    private const array ALLOWED_PAGES = [
+        'ui-general',
+        'ui-timeline',
+        'widgets-small-box',
+        'widgets-info-box',
+        'widgets-card',
+        'forms-general',
+        'tables-simple',
     ];
 
     /**
@@ -52,6 +41,6 @@ class PageController extends AbstractWebController
             throw new HttpNotFoundException('Page not found', 404);
         }
 
-        return $this->getResponse($this->render('@app/Page/' . ucfirst($page) . '.twig'));
+        return $this->getResponse($this->render("@app/page/$page.html.twig"));
     }
 }

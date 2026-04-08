@@ -62,7 +62,7 @@ class User extends Abstracts\AbstractUser implements EntityInterface
     public function revokeToken(Token $token): void
     {
         $tokenList = $this->getTokenHashListDecoded();
-        $key = \array_search(\hash('md5', $token->toString()), $tokenList);
+        $key = \array_search(\hash('md5', $token->toString()), $tokenList, strict: true);
 
         if ($key !== false) {
             unset($tokenList[$key]);
@@ -78,7 +78,7 @@ class User extends Abstracts\AbstractUser implements EntityInterface
     {
         $hash = \hash('md5', $token->toString());
 
-        return \in_array($hash, $this->getTokenHashListDecoded(), true);
+        return \in_array($hash, $this->getTokenHashListDecoded(), strict: true);
     }
 
     /**
@@ -94,7 +94,7 @@ class User extends Abstracts\AbstractUser implements EntityInterface
 
         //~ Remove the oldest token if necessary
         if (count($accessTokenList) > self::MAX_ACTIVE_TOKEN_KEPT) {
-            array_shift($accessTokenList);
+            \array_shift($accessTokenList);
         }
 
         //~ Set json_encode list into entity
@@ -114,7 +114,7 @@ class User extends Abstracts\AbstractUser implements EntityInterface
 
         //~ Search and remove token hash from list
         $hash = \hash('md5', $token->toString());
-        $key  = array_search($hash, $tokenHashList);
+        $key  = \array_search($hash, $tokenHashList, strict: true);
 
         if ($key === false) {
             return $this;
@@ -126,6 +126,11 @@ class User extends Abstracts\AbstractUser implements EntityInterface
         $this->setTokenHashList(\json_encode($tokenHashList, flags: \JSON_THROW_ON_ERROR));
 
         return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
     /**

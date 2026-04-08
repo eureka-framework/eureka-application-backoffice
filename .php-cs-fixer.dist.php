@@ -4,7 +4,7 @@ return (new PhpCsFixer\Config())
     //~ Rules
     ->setRules(
         [
-            '@PER-CS2.0' => true,
+            '@PER-CS3x0' => true,
         ]
     )
 
@@ -22,7 +22,6 @@ return (new PhpCsFixer\Config())
             __DIR__ . '/src',
             __DIR__ . '/scripts',
             __DIR__ . '/tests',
-            __DIR__ . '/features/bootstrap',
         ])
     )
 ;

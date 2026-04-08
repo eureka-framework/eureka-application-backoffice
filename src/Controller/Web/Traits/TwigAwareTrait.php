@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Application\Controller\Web\Traits;
 
-use Eureka\Kernel\Http\Service\DataCollection;
+use Application\VO\TwigContext;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -25,7 +25,7 @@ use Twig\Error\SyntaxError;
 trait TwigAwareTrait
 {
     private Environment $twig;
-    protected ?DataCollection $context = null;
+    protected ?TwigContext $context = null;
 
     /**
      * @param Environment $twig
@@ -39,12 +39,12 @@ trait TwigAwareTrait
     /**
      * Get context.
      *
-     * @return DataCollection
+     * @return TwigContext
      */
-    protected function getContext(): DataCollection
+    protected function getContext(): TwigContext
     {
         if ($this->context === null) {
-            $this->context = new DataCollection();
+            $this->context = new TwigContext();
         }
 
         return $this->context;

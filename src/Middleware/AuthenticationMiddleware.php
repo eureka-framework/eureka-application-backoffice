@@ -36,9 +36,6 @@ readonly class AuthenticationMiddleware implements MiddlewareInterface
     ) {}
 
     /**
-     * @param ServerRequestInterface $serverRequest
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      * @throws HttpBadRequestException
      * @throws HttpUnauthorizedException
      * @throws OrmException
@@ -47,7 +44,7 @@ readonly class AuthenticationMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $serverRequest, RequestHandlerInterface $handler): ResponseInterface
     {
         //~ Get authentication required flag from request (set in RouterMiddleware, defined in routing)
-        $authenticationRequired = $serverRequest->getAttribute('authenticationRequired', false);
+        $authenticationRequired = (bool) $serverRequest->getAttribute('authenticationRequired', false);
 
         //~ If auth is required, verify if auth is valid (token is valid & token not expired)
         if ($authenticationRequired) {
@@ -104,7 +101,13 @@ readonly class AuthenticationMiddleware implements MiddlewareInterface
      */
     private function getUser(UnencryptedToken $token): User
     {
-        $userId = (int) $token->claims()->get('uid');
+        $userId = $token->claims()->get('uid');
+
+        if (!\is_numeric($userId)) {
+            throw new \UnexpectedValueException('Token does not contains userId');
+        }
+
+        $userId = (int) $userId;
 
         try {
             $user = $this->userRepository->findById($userId);
@@ -136,7 +139,7 @@ readonly class AuthenticationMiddleware implements MiddlewareInterface
     {
         $now = $this->clock->now()->format('Y-m-d H:i:s');
 
-        if (empty($user->getDateFirstAccess())) {
+        if ($user->getDateFirstAccess() === '' || $user->getDateLastAccess() === null) {
             $user->setDateFirstAccess($now);
         }
 

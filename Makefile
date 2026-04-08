@@ -1,8 +1,14 @@
-.PHONY: validate install update phpcs phpcsf php-min-compatibility php-max-compatibility phpstan analyze tests testdox ci clean
+.PHONY: validate install update outdated php/deps php/check php/fix php/tests php/testdox php/integration php/analyze ci clean docker/build docker/run docker/stop docker/shell
 
-PHP_MIN_VERSION := "8.3"
-PHP_MAX_VERSION := "8.3"
+PHP_MIN_VERSION := "8.4"
+PHP_MAX_VERSION := "8.5"
 COMPOSER_BIN := composer
+DOCKER_SRC := "/app/"
+DOCKER_NAME := application-web-backoffice
+DOCKER_TARGET := dev
+DOCKER_MOUNTS = $(shell if [ "${DOCKER_TARGET}" = "dev" ]; then echo "-v ${PWD}:${DOCKER_SRC}"; fi)
+DOCKER_TYPE := "frankenphp"
+LOCAL_PORT := 80
 
 define header =
     @if [ -t 1 ]; then printf "\n\e[37m\e[100m  \e[104m $(1) \e[0m\n"; else printf "\n### $(1)\n"; fi
@@ -39,53 +45,79 @@ build/reports/phpstan:
 	@mkdir -p build/reports/phpstan
 
 #~ main commands
-deps: composer.json # jenkins + manual
+php/deps: composer.json # jenkins + manual
 	$(call header,Checking Dependencies)
 	@XDEBUG_MODE=off ./vendor/bin/composer-dependency-analyser --config=./ci/composer-dependency-analyser.php # for shadow & unused required dependencies
-	#@XDEBUG_MODE=off ./vendor/bin/composer-require-checker check # mainly for ext-* missing dependencies
 
-phpcs: vendor/bin/php-cs-fixer build/reports/phpcs # auto + manual
+php/check: vendor/bin/php-cs-fixer build/reports/phpcs # auto + manual
 	$(call header,Checking Code Style)
-	@./vendor/bin/php-cs-fixer check -v --diff
+	@XDEBUG_MODE=off ./vendor/bin/php-cs-fixer check -v --diff
 
-phpcsf: vendor/bin/php-cs-fixer # manual
+php/fix: vendor/bin/php-cs-fixer # manual
 	$(call header,Fixing Code Style)
-	@./vendor/bin/php-cs-fixer fix -v
+	@XDEBUG_MODE=off ./vendor/bin/php-cs-fixer fix -v
 
-php-min-compatibility: vendor/bin/phpstan build/reports/phpstan # auto + manual
+php/min-compatibility: vendor/bin/phpstan build/reports/phpstan # auto + manual
 	$(call header,Checking PHP $(PHP_MIN_VERSION) compatibility)
 	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --configuration=./ci/phpmin-compatibility.neon --error-format=checkstyle > ./build/reports/phpstan/phpmin-compatibility.xml
 
-php-max-compatibility: vendor/bin/phpstan build/reports/phpstan # auto + manual
+php/max-compatibility: vendor/bin/phpstan build/reports/phpstan # auto + manual
 	$(call header,Checking PHP $(PHP_MAX_VERSION) compatibility)
 	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --configuration=./ci/phpmax-compatibility.neon --error-format=checkstyle > ./build/reports/phpstan/phpmax-compatibility.xml
 
-phpstan: vendor/bin/phpstan build/reports/phpstan # auto
-	$(call header,Running Static Analyze)
-	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --error-format=checkstyle > ./build/reports/phpstan/phpstan.xml
-
-analyze: vendor/bin/phpstan build/reports/phpstan # manual
+php/analyze: vendor/bin/phpstan build/reports/phpstan # manual
 	$(call header,Running Static Analyze - Pretty tty format)
 	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --error-format=table
 
-tests: vendor/bin/phpunit build/reports/phpunit # auto + manual
+php/tests: vendor/bin/phpunit build/reports/phpunit # auto + manual
 	$(call header,Running Unit Tests)
-	@XDEBUG_MODE=coverage DEEZER_MODE=test php -dzend_extension=xdebug.so ./vendor/bin/phpunit --testsuite=unit --coverage-clover=./build/reports/phpunit/clover.xml --log-junit=./build/reports/phpunit/unit.xml --coverage-php=./build/reports/phpunit/unit.cov --coverage-html=./build/reports/coverage/ --fail-on-warning
+	@XDEBUG_MODE=coverage DEEZER_MODE=test php ./vendor/bin/phpunit --testsuite=unit --coverage-clover=./build/reports/phpunit/clover.xml --log-junit=./build/reports/phpunit/unit.xml --coverage-php=./build/reports/phpunit/unit.cov --coverage-html=./build/reports/coverage/ --fail-on-warning
 
-integration: vendor/bin/phpunit build/reports/phpunit # manual
+php/integration: vendor/bin/phpunit build/reports/phpunit # manual
 	$(call header,Running Integration Tests)
-	@XDEBUG_MODE=coverage DEEZER_MODE=test php -dzend_extension=xdebug.so ./vendor/bin/phpunit --testsuite=integration --fail-on-warning
+	@XDEBUG_MODE=coverage DEEZER_MODE=test php ./vendor/bin/phpunit --testsuite=integration --fail-on-warning
 
-testdox: vendor/bin/phpunit # manual
+php/testdox: vendor/bin/phpunit # manual
 	$(call header,Running Unit Tests (Pretty format))
-	@XDEBUG_MODE=coverage DEEZER_MODE=test php -dzend_extension=xdebug.so ./vendor/bin/phpunit --testsuite=unit --fail-on-warning --testdox
-
-behat: vendor/bin/behat # auto + manual
-	$(call header,Running Bethat tests)
-	@XDEBUG_MODE=off DEEZER_MODE=test ./vendor/bin/behat --strict --tags="~@disabled&&~@external" --colors
+	@XDEBUG_MODE=coverage DEEZER_MODE=test php ./vendor/bin/phpunit --testsuite=unit --fail-on-warning --testdox
 
 clean: # manual
 	$(call header,Cleaning previous build)
 	@if [ "$(shell ls -A ./build)" ]; then rm -rf ./build/*; fi; echo " done"
 
-ci: clean validate deps phpcs tests integration php-min-compatibility php-max-compatibility analyze behat
+ci: clean validate php/deps php/check php/tests php/integration php/min-compatibility php/max-compatibility php/analyze
+
+###########################################################################################################
+# ASSETS
+###########################################################################################################
+assets/update: # manual
+	$(call header,Update assets)
+	@XDEBUG_MODE=off EKA_DEBUG=1 EKA_ENV=dev bin/symfony importmap:update
+
+assets/compile: # manual
+	$(call header,Compile assets)
+	@XDEBUG_MODE=off EKA_DEBUG=1 EKA_ENV=dev bin/symfony asset-map:compile
+
+
+###########################################################################################################
+# DOCKER
+###########################################################################################################
+#~ Docker commands
+docker/build:
+	$(call header,Building Docker Local Image)
+	@docker build --target ${DOCKER_TARGET} -t ${DOCKER_NAME}:local ${dockerOpts} -f docker/${DOCKER_TYPE}/Dockerfile .
+
+docker/run:
+	$(call header,Run Docker Local Image)
+	#~ Fix permissions issues when mounting volumes
+	@sudo chmod -R 0777 var/cache/dev
+	@sudo chmod -R 0777 var/log/dev
+	@docker run -it --rm -d ${DOCKER_MOUNTS} -p ${LOCAL_PORT}:8080 --tty -e EKA_ENV=dev -e EKA_DEBUG=1 --name ${DOCKER_NAME} ${DOCKER_NAME}:local
+
+docker/stop:
+	$(call header,Stop Docker Local Image)
+	@docker container stop ${DOCKER_NAME}
+
+docker/shell:
+	$(call header,Opening shell in container, type exit to quit container shell)
+	@docker exec -it ${DOCKER_NAME} sh && cd /app

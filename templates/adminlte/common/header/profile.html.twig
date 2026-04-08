@@ -1,0 +1,23 @@
+
+<li class="nav-item dropdown user-menu">
+    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+        <img src="{{ image('asset://avatar-default.svg') }}" class="user-image rounded-circle shadow" alt="User Image" />
+        <span class="d-none d-md-inline">{{ user.getFullName()|default('User #1') }}</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+        <li class="user-header text-bg-primary">
+            <img src="{{ image('asset://avatar-default.svg') }}" class="rounded-circle shadow" alt="User Image" />
+            <p>
+                {{ user.getFullName()|default('User #1') }}
+                <small>Member since {{ user.getDateCreate()|format('Y-m-d') }}</small>
+            </p>
+        </li>
+        <li class="user-body">
+           <!-- nothing for now-->
+        </li>
+        <li class="user-footer">
+            <a href="#" class="btn btn-outline-secondary">Profile</a>
+            <a href="#" class="btn btn-outline-danger float-end">Sign out</a>
+        </li>
+    </ul>
+</li>

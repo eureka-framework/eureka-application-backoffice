@@ -1,0 +1,24 @@
+
+<!-- Notifications Dropdown Menu -->
+<li class="nav-item dropdown">
+    <a class="nav-link" data-bs-toggle="dropdown" href="#">
+        <i class="bi bi-bell-fill"></i>
+        {% if notifications.length > 0 %}
+        <span class="navbar-badge badge text-bg-warning">{{  notifications.length }}</span>
+        {% endif %}
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+        <span class="dropdown-item dropdown-header">{{ notifications.length }} Notifications</span>
+        <div class="dropdown-divider"></div>
+        {% for notification in notifications %}
+        <a href="#" class="dropdown-item">
+            <i class="bi bi-envelope me-2"></i> {{ notification.getTitle() }}
+            <span class="float-end text-secondary fs-7">{{ notification.getTimeAgo() }}</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        {% endfor %}
+        <a href="#" class="dropdown-item dropdown-footer">
+            See All Notifications
+        </a>
+    </div>
+</li>
