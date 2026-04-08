@@ -1,4 +1,4 @@
-.PHONY: validate install update phpcs phpcsf php-min-compatibility php-max-compatibility phpstan analyze tests testdox ci clean docker/build docker/run docker/stop docker/shell
+.PHONY: validate install update outdated php/deps php/check php/fix php/tests php/testdox php/integration php/analyze ci clean docker/build docker/run docker/stop docker/shell
 
 PHP_MIN_VERSION := "8.4"
 PHP_MAX_VERSION := "8.5"
@@ -49,11 +49,11 @@ php/deps: composer.json # jenkins + manual
 	$(call header,Checking Dependencies)
 	@XDEBUG_MODE=off ./vendor/bin/composer-dependency-analyser --config=./ci/composer-dependency-analyser.php # for shadow & unused required dependencies
 
-php/cs: vendor/bin/php-cs-fixer build/reports/phpcs # auto + manual
+php/check: vendor/bin/php-cs-fixer build/reports/phpcs # auto + manual
 	$(call header,Checking Code Style)
 	@XDEBUG_MODE=off ./vendor/bin/php-cs-fixer check -v --diff
 
-php/csfix: vendor/bin/php-cs-fixer # manual
+php/fix: vendor/bin/php-cs-fixer # manual
 	$(call header,Fixing Code Style)
 	@XDEBUG_MODE=off ./vendor/bin/php-cs-fixer fix -v
 
@@ -85,7 +85,7 @@ clean: # manual
 	$(call header,Cleaning previous build)
 	@if [ "$(shell ls -A ./build)" ]; then rm -rf ./build/*; fi; echo " done"
 
-ci: clean validate php/deps php/cs php/tests php/integration php/min-compatibility php/max-compatibility php/analyze
+ci: clean validate php/deps php/check php/tests php/integration php/min-compatibility php/max-compatibility php/analyze
 
 ###########################################################################################################
 # ASSETS
